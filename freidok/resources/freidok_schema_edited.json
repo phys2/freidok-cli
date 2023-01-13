@@ -1,0 +1,2393 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://freidok.uni-freiburg.de/publications.json",
+  "type": "object",
+  "title": "Publications",
+  "description": "Schema for the JSON-Output of a List of publications by the API-v1 of FreiDok plus",
+  "required": [
+    "numFound",
+    "start",
+    "maxRows",
+    "type",
+    "docs"
+  ],
+  "properties": {
+    "numFound": {
+      "type": "integer",
+      "description": "Number of searchresults for the given request.",
+      "minimum": 0
+    },
+    "start": {
+      "type": "integer",
+      "description": "Offset for the result-list.",
+      "default": 0,
+      "minimum": 0
+    },
+    "maxRows": {
+      "type": "integer",
+      "description": "Maximum number of results per request.",
+      "default": 25,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "type": {
+      "type": "string",
+      "description": "Describes the type of this JSON-object",
+      "default": "publication"
+    },
+    "docs": {
+      "type": "array",
+      "description": "List of found publications.",
+      "items": {
+        "type": "object",
+        "description": "Entry for a single publication.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "unique publication-ID of FreiDok plus",
+            "minimum": 1
+          },
+          "link": {
+            "type": "string",
+            "description": "Link to the publication's landingpage in FreiDok plus.",
+            "examples": [
+              "https://freidok.uni-freiburg.de/data/16160"
+            ]
+          },
+          "owner": {
+            "type": "object",
+            "description": "Information about authentification. ONLY VISIBLE FOR ADMINS OR OWNERS.",
+            "examples": [
+              {
+                "type_value": "authentifiziert per Lopes-TAN",
+                "type": "lopes_tan",
+                "value": "21212"
+              }
+            ],
+            "required": [
+              "type",
+              "type_value",
+              "value"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "type of authentification"
+              },
+              "type_value": {
+                "type": "string",
+                "description": "language-dependend description for type of authentification"
+              },
+              "value": {
+                "type": "string",
+                "description": "eppn or lopes-ID of the owner"
+              }
+            }
+          },
+          "abstracts": {
+            "type": "array",
+            "description": "List of abstracts",
+            "items": {
+              "type": "object",
+              "description": "Entry for an abstract",
+              "examples": [
+                {
+                  "language": "eng",
+                  "language_value": "englisch",
+                  "value": "Background<br>Apoid wasps and bees (Apoidea) are an ecologically and morphologically diverse group of Hymenoptera, with some species of bees having evolved eusocial societies. Major problems for our understanding of the evolutionary history of Apoidea have been the difficulty to trace the phylogenetic origin and to reliably estimate the geological age of bees. To address these issues, we compiled a comprehensive phylogenomic dataset by simultaneously analyzing target DNA enrichment and transcriptomic sequence data, comprising 195 single-copy protein-coding genes and covering all major lineages of apoid wasps and bee families.<br><br>Results<br>Our compiled data matrix comprised 284,607 nucleotide sites that we phylogenetically analyzed by applying a combination of domain- and codon-based partitioning schemes. The inferred results confirm the polyphyletic status of the former family “Crabronidae”, which comprises nine major monophyletic lineages. We found the former subfamily Pemphredoninae to be polyphyletic, comprising three distantly related clades. One of them, Ammoplanina, constituted the sister group of bees in all our analyses. We estimate the origin of bees to be in the Early Cretaceous (ca. 128 million years ago), a time period during which angiosperms rapidly radiated. Finally, our phylogenetic analyses revealed that within the Apoidea, (eu)social societies evolved exclusively in a single clade that comprises pemphredonine and philanthine wasps as well as bees.<br><br>Conclusion<br>By combining transcriptomic sequences with those obtained via target DNA enrichment, we were able to include an unprecedented large number of apoid wasps in a phylogenetic study for tracing the phylogenetic origin of bees. Our results confirm the polyphyletic nature of the former wasp family Crabonidae, which we here suggest splitting into eight families. Of these, the family Ammoplanidae possibly represents the extant sister lineage of bees. Species of Ammoplanidae are known to hunt thrips, of which some aggregate on flowers and feed on pollen. The specific biology of Ammoplanidae as predators indicates how the transition from a predatory to pollen-collecting life style could have taken place in the evolution of bees. This insight plus the finding that (eu)social societies evolved exclusively in a single subordinated lineage of apoid wasps provides new perspectives for future comparative studies.",
+                  "grouping": 1
+                }
+              ],
+              "required": [
+                "language",
+                "language_value",
+                "value"
+              ],
+              "properties": {
+                "language": {
+                  "type": "string",
+                  "description": "attribute-id of the language"
+                },
+                "language_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the language"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "Content of the abstract"
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "researchdata_descriptions": {
+            "type": "array",
+            "description": "List of researchdata-descriptions. ONLY VISIBLE IF pubtype=research_data.",
+            "items": {
+              "type": "object",
+              "description": "Entry for a researchdata-description",
+              "examples": [
+                {
+                  "type_value": "Inhalt",
+                  "type": "contents",
+                  "value": "Meine Forschungsdaten blbla..",
+                  "grouping": 1
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "value"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of type of description-content"
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the type of description-content"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "the research-description"
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "descriptions": {
+            "type": "array",
+            "description": "List of generic descriptions.",
+            "items": {
+              "type": "object",
+              "description": "Entry for a generic description.",
+              "examples": [
+                {
+                  "type": "table_of_contents",
+                  "type_value": "Inhaltsverzeichnis",
+                  "value": "1. Kapitel 1; 2. Kapitel 2; ...",
+                  "grouping": 1,
+                  "datacite": "descriptionType=TableOfContents"
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "value",
+                "datacite"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of type of general description"
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the type of general description"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "the description"
+                },
+                "datacite": {
+                  "type": "string",
+                  "description": "mapping to Datacite's metadata-schema"
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "messages": {
+            "type": "array",
+            "description": "List of messages (or comments). ONLY VISIBLE FOR ADMINS.",
+            "items": {
+              "type": "object",
+              "description": "Entry for a message.",
+              "examples": [
+                {
+                  "type_value": "vom System",
+                  "type": "system",
+                  "value": "lorem ipsum dor.."
+                },
+                {
+                  "type_value": "vom Admin",
+                  "type": "admin",
+                  "value": "lorem ipsum dor.."
+                },
+                {
+                  "type_value": "vom Nutzer",
+                  "type": "user",
+                  "value": "lorem ipsum dor.."
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "value"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of type of message."
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the type of message."
+                },
+                "value": {
+                  "type": "string",
+                  "description": "the message (or comment)"
+                }
+              }
+            }
+          },
+          "classifications": {
+            "type": "array",
+            "description": "List of classification-assignments for classifications, that are imported to FreiDok plus.",
+            "items": {
+              "type": "object",
+              "description": "Entry for a classification-asssignment.",
+              "examples": [
+                {
+                  "norm_id": "570",
+                  "type": "ddc",
+                  "type_value": "DDC - Dewey Decimal Classification",
+                  "value": "Biologie",
+                  "value_long": "Naturwissenschaften und Mathematik / Biologie",
+                  "grouping": 1
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "norm_id",
+                "value",
+                "value_long"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of the referenced classification"
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the referenced classification"
+                },
+                "norm_id": {
+                  "type": "string",
+                  "description": "id of the classification's category to assign"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "description of the classification's category to assign"
+                },
+                "value_long": {
+                  "type": "string",
+                  "description": "long description (e.g. with parent categories) of the classifications category to assign"
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "classifications_uncontrolled": {
+            "type": "array",
+            "description": "List of classification-assignments for classifications, that are NOT imported to FreiDok plus.",
+            "items": {
+              "type": "object",
+              "description": "Entry for a classification-asssignment.",
+              "examples": [
+                {
+                  "type": "mesh",
+                  "type_value": "MeSH - Medical Subject Headings",
+                  "value": "123.2 (Orthopädie)",
+                  "grouping": 1
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "value"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of the referenced classification"
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the referenced classification"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "description (and ID) of the classifications category to assign"
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "pub_ids": {
+            "type": "array",
+            "description": "List of identifiers for the publication. --> PROPOSED TO BE RENAMED TO pub_ids",
+            "items": {
+              "type": "object",
+              "description": "Entry for an identifier of the publication",
+              "examples": [
+                {
+                  "type": "doi",
+                  "type_value": "DOI",
+                  "value": "10.1186/s12862-018-1155-8",
+                  "grouping": 1,
+                  "link": "https://doi.org/10.1186/s12862-018-1155-8"
+                },
+                {
+                  "type": "urn",
+                  "type_value": "URN",
+                  "link": "http://nbn-resolving.de/urn:nbn:de:bsz:25-freidok-161606",
+                  "value": "urn:nbn:de:bsz:25-freidok-161606",
+                  "grouping": 2
+                },
+                {
+                  "type": "ppn",
+                  "type_value": "PPN",
+                  "value": "510349528",
+                  "grouping": 3,
+                  "link": "https://katalog.ub.uni-freiburg.de/link?id=510349528"
+                },
+                {
+                  "type": "dnb",
+                  "type_value": "DNB",
+                  "value": "1165527464",
+                  "grouping": 4,
+                  "link": "https://d-nb.info/1165527464"
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "value",
+                "link"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of the type of identifier"
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the type of identifier"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "the identifier"
+                },
+                "link": {
+                  "type": "string",
+                  "description": "URL to resolve the identifier"
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "pub_ids_internal": {
+            "type": "array",
+            "description": "List of internal identifiers for the publication. ONLY VISIBLE TO ADMINS. --> PROPOSED TO BE RENAMED TO pub_ids_internal.",
+            "items": {
+              "type": "object",
+              "description": "Entry for an internal identifier of the publication.",
+              "examples": [
+                {
+                  "type": "oa_fonds_id",
+                  "type_value": "OA Fonds",
+                  "value": "OA-BMC-0490",
+                  "grouping": 1
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "value"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of the type of identifier"
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the type of identifier"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "the identifier"
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "pubtype": {
+            "type": "object",
+            "description": "type of the publication. --> PROPOSED TO BE RENAMED TO pubtype",
+            "examples": [
+              {
+                "type": "article",
+                "value": "Wissenschaftlicher Artikel",
+                "datacite": "Text",
+                "marcxml": "article"
+              }
+            ],
+            "required": [
+              "type",
+              "value"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "attribute-id of the publication-type"
+              },
+              "value": {
+                "type": "string",
+                "description": "language-dependend description of the publication-type"
+              },
+              "marcxml": {
+                "type": "string",
+                "description": "MarcXML-id of the publication-type (mapping for MarcXML)"
+              },
+              "datacite": {
+                "type": "string",
+                "description": "Datacite-id of the publication-type (mapping for Datacite)"
+              }
+            }
+          },
+          "state": {
+            "type": "object",
+            "description": "NOT YET IMPLEMENTED. state of review and public availability",
+            "examples": [
+              {
+                "tech": {
+                  "value": "geprüft",
+                  "type": "ok"
+                },
+                "metadata": {
+                  "value": "geprüft",
+                  "type": "ok"
+                },
+                "legal": {
+                  "type": "ok",
+                  "value": "geprüft"
+                },
+                "content": {
+                  "value": "geprüft",
+                  "type": "ok"
+                }
+              }
+            ],
+            "required": [
+              "metadata",
+              "tech",
+              "content",
+              "legal"
+            ],
+            "properties": {
+              "metadata": {
+                "type": "object",
+                "description": "object for state of review of general metadata",
+                "required": [
+                  "type",
+                  "value"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "state of review of general metadata"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "language-dependend description of state of review of general metadata"
+                  }
+                }
+              },
+              "tech": {
+                "type": "object",
+                "description": "object for state of review of technical metadata",
+                "required": [
+                  "type",
+                  "value"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "state of review of technical metadata"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "language-dependend description of state of review of technical metadata"
+                  }
+                }
+              },
+              "content": {
+                "type": "object",
+                "description": "object for state of review of metadata with regards to content",
+                "required": [
+                  "type",
+                  "value"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "state of review of metadata with regards to content"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "language-dependend description of state of review of metadata with regards to content"
+                  }
+                }
+              },
+              "legal": {
+                "type": "object",
+                "description": "object for state of review of legal metadata",
+                "required": [
+                  "type",
+                  "value"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "state of review of legal metadata"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "language-dependend description of state of review of legal metadata"
+                  }
+                }
+              }
+            }
+          },
+          "issued": {
+            "type": "object",
+            "description": "NOT YET IMPLEMENTED. An explanation about the purpose of this instance. ONLY VISIBLE FOR ADMINS",
+            "examples": [
+              {
+                "value": true
+              }
+            ],
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "type": "boolean",
+                "description": "if the publication is already visible online"
+              }
+            }
+          },
+          "fachsigel": {
+            "type": "object",
+            "description": "fachsigel. ONLY VISIBLE FOR ADMINS.",
+            "examples": [
+              {
+                "norm_id": "17",
+                "value": "Biologie"
+              }
+            ],
+            "required": [
+              "norm_id",
+              "value"
+            ],
+            "properties": {
+              "norm_id": {
+                "type": "string",
+                "description": "id of the fachsigel"
+              },
+              "value": {
+                "type": "string",
+                "description": "description (name) of the fachsigel"
+              }
+            }
+          },
+          "acquisition_type": {
+            "type": "object",
+            "description": "acquisition type",
+            "examples": [
+              {
+                "type": "in_ub",
+                "value": "in UB erstellt"
+              }
+            ],
+            "required": [
+              "type",
+              "value"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "attribute-id of the acquisition type"
+              },
+              "value": {
+                "type": "string",
+                "description": "description (name) of the acquisition type"
+              }
+            }
+          },
+          "submission_type": {
+            "type": "object",
+            "description": "information about how the publication was submitted. ONLY VISIBLE FOR ADMINS.",
+            "examples": [
+              {
+                "value": "Import",
+                "type": "import"
+              }
+            ],
+            "required": [
+              "type",
+              "value"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "attribute-id of the submission-type"
+              },
+              "value": {
+                "type": "string",
+                "description": "name (description) of the submission-type"
+              }
+            }
+          },
+          "keywords": {
+            "type": "array",
+            "description": "List of keywords from the GND (or other normed keyword-catalogs).",
+            "items": {
+              "type": "object",
+              "description": "Entry for a keyword from GND",
+              "examples": [
+                {
+                  "type": "k_gnd",
+                  "type_value": "GND-Schlagwort",
+                  "norm_id": "4182991-8",
+                  "value": "Stechimmen",
+                  "link": "https://d-nb.info/4182991-8",
+                  "mode": "s",
+                  "mode_value": "Sachbegriff",
+                  "grouping": 1
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "norm_id",
+                "value",
+                "mode",
+                "mode_value",
+                "link"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of the referred catalog (currently only k_gnd available)"
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the referred catalog "
+                },
+                "norm_id": {
+                  "type": "string",
+                  "description": "id of the catalog's keyword to assign"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "description of the catalog's keyword to assign"
+                },
+                "mode": {
+                  "type": "string",
+                  "description": "type of keyword."
+                },
+                "mode_value": {
+                  "type": "string",
+                  "description": "description of type of keyword"
+                },
+                "link": {
+                  "type": "string",
+                  "description": "url to the keyword in the catalog"
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "keywords_uncontrolled": {
+            "type": "array",
+            "description": "List of free keywords",
+            "items": {
+              "type": "object",
+              "description": "Entry for a free keyword",
+              "examples": [
+                {
+                  "language": "eng",
+                  "language_value": "englisch",
+                  "value": "Apoid wasps",
+                  "grouping": 1
+                }
+              ],
+              "required": [
+                "language",
+                "language_value",
+                "value"
+              ],
+              "properties": {
+                "language": {
+                  "type": "string",
+                  "description": "attribute-id of the language"
+                },
+                "language_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the language"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "the keyword"
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "languages": {
+            "type": "array",
+            "description": "List of languages assigned to this publication",
+            "items": {
+              "type": "object",
+              "description": "Entry for a language-assignment",
+              "examples": [
+                {
+                  "type": "eng",
+                  "value": "englisch",
+                  "grouping": 1
+                }
+              ],
+              "required": [
+                "type",
+                "value"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of the language"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "language-dependend description of the language"
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "edition": {
+            "type": "object",
+            "description": "Edition/Version of the publication",
+            "examples": [
+              {
+                "value": "Version 1"
+              }
+            ],
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "type": "string",
+                "description": "the edition/version of the publication"
+              }
+            }
+          },
+          "publication_year": {
+            "type": "object",
+            "description": "Publication-year of the publication.",
+            "examples": [
+              {
+                "value": 2018
+              }
+            ],
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "type": "integer",
+                "description": "the publication-year of the publication."
+              }
+            }
+          },
+          "day_of_exam": {
+            "type": "object",
+            "description": "day of exam. ONLY VISIBLE IF pubtype=doctoral_thesis.",
+            "examples": [
+              {
+                "value": "23.07.2018",
+                "date": "2018-07-23"
+              }
+            ],
+            "required": [
+              "date",
+              "value"
+            ],
+            "properties": {
+              "date": {
+                "type": "string",
+                "description": "date in the format YYYY-MM-DD"
+              },
+              "value": {
+                "type": "string",
+                "description": "date in the format DD.MM.YYYY"
+              }
+            }
+          },
+          "system_time": {
+            "type": "object",
+            "description": "timestamps for different events during publication processs",
+            "examples": [
+              {
+                "date_submitted": {
+                  "value": "23.08.2018 12:10",
+                  "timestamp": "1532530695"
+                },
+                "date_issued": {
+                  "value": "23.08.2018 12:11",
+                  "timestamp": "1535014282"
+                },
+                "date_updated": {
+                  "value": "23.08.2018 12:11",
+                  "timestamp": "1535014282"
+                }
+              }
+            ],
+            "required": [
+              "date_submitted",
+              "date_updated",
+              "date_issued"
+            ],
+            "properties": {
+              "date_submitted": {
+                "type": "object",
+                "description": "time of submission of the publication in FreiDok plus",
+                "properties": {
+                  "timestamp": {
+                    "type": "string",
+                    "description": "unix-timestamp"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "timestamp in the format DD.MM.YYYY HH:mm"
+                  }
+                }
+              },
+              "date_updated": {
+                "type": "object",
+                "description": "time of last change of metadata of the publication in FreiDok plus",
+                "properties": {
+                  "timestamp": {
+                    "type": "string",
+                    "description": "unix-timestamp"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "timestamp in the format DD.MM.YYYY HH:mm"
+                  }
+                }
+              },
+              "date_issued": {
+                "type": "object",
+                "description": "time of the publication being visible online the first time in FreiDok plus",
+                "properties": {
+                  "timestamp": {
+                    "type": "string",
+                    "description": "unix-timestamp"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "timestamp in the format DD.MM.YYYY HH:mm"
+                  }
+                }
+              }
+            }
+          },
+          "titles": {
+            "type": "array",
+            "description": "List of titles",
+            "items": {
+              "type": "object",
+              "description": "Entry for a title",
+              "examples": [
+                {
+                  "language": "eng",
+                  "language_value": "englisch",
+                  "value": "Phylogenomic analysis of Apoidea sheds nuew light on the sister group of bees",
+                  "grouping": 1
+                },
+                {
+                  "language": "ger",
+                  "language_value": "deutsch",
+                  "value": "Bienen-Publikation",
+                  "grouping": 2
+                }
+              ],
+              "required": [
+                "language",
+                "language_value",
+                "value"
+              ],
+              "properties": {
+                "language": {
+                  "type": "string",
+                  "description": "attribute-id of the language"
+                },
+                "language_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the language"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "the title"
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "title_parents": {
+            "type": "array",
+            "description": "List of arrays, that contain references to parent publications",
+            "items": {
+              "type": "array",
+              "description": "List of parent- (first entry), grand-parent- (second entry) and-so-on-publication-references.",
+              "items": {
+                "type": "object",
+                "description": "Entry of a publication-reference",
+                "examples": [
+                  {
+                    "norm_id": 113,
+                    "value": "Zeitschrift Poly",
+                    "link": "https://freidok.uni-freiburg.de/data/113"
+                  },
+                  {
+                    "norm_id": 127,
+                    "value": "Band A",
+                    "link": "https://freidok.uni-freiburg.de/data/127"
+                  }
+                ],
+                "required": [
+                  "norm_id",
+                  "value",
+                  "link"
+                ],
+                "properties": {
+                  "norm_id": {
+                    "type": "integer",
+                    "description": "publication-id of the referenced publication"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "(first) title of the referenced publication"
+                  },
+                  "link": {
+                    "type": "string",
+                    "description": "url to the referenced publication"
+                  }
+                }
+              }
+            }
+          },
+          "persons": {
+            "type": "array",
+            "description": "List of persons involved in this publication",
+            "items": {
+              "type": "object",
+              "description": "Information about a perosn involved in this publication",
+              "examples": [
+                {
+                  "norm_id": 24328,
+                  "forename": "Manuela",
+                  "surname": "Sann",
+                  "value": "Sann, Manuela",
+                  "type": "author",
+                  "type_value": "Autor",
+                  "datacite": "Author",
+                  "marcxml": "aut",
+                  "affiliations": [
+                    {
+                      "norm_id": 2672,
+                      "value": "Evolutionsbiologie & Ökologie",
+                      "lifetime": "2001 - 2006",
+                      "link": "https://freidok.uni-freiburg.de/inst/2672",
+                      "sup_no": 1
+                    }
+                  ],
+                  "orcid_link": "https://orcid.org/0000-0002-5932-6799",
+                  "name_forms": [
+                    {
+                      "name_no": 1,
+                      "selected": true,
+                      "value": "Sann, Manuela"
+                    },
+                    {
+                      "value": "Sann, M.",
+                      "name_no": 2,
+                      "selected": false
+                    }
+                  ],
+                  "gnd_link": "https://d-nb.info/gnd/119348527",
+                  "link": "https://freidok.uni-freiburg.de/pers/24328",
+                  "is_corresponding_author": true,
+                  "author_function": {
+                    "value": "Erst-Autor",
+                    "sup_no": "a",
+                    "type": "first_author"
+                  },
+                  "import_info": {
+                    "matching_type": "orcid/gnd/name/user/admin",
+                    "orcid_imported": "0000-1234-1234-1323",
+                    "gnd_imported": "1108295533"
+                  },
+                  "grouping": 1
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "norm_id",
+                "link",
+                "is_corresponding_author",
+                "value",
+                "forename",
+                "surname",
+                "orcid_link",
+                "gnd_link",
+                "name_forms",
+                "affiliations",
+                "author_function",
+                "import_info"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of the person's role"
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the person's role"
+                },
+                "norm_id": {
+                  "type": "integer",
+                  "description": "id of the person in FreiDok plus"
+                },
+                "link": {
+                  "type": "string",
+                  "description": "url to the person's landingpage in FreiDok plus"
+                },
+                "is_corresponding_author": {
+                  "type": "boolean",
+                  "description": "if the person is one of the corresponding authors of this publication",
+                  "default": false
+                },
+                "marcxml": {
+                  "type": "string",
+                  "description": "MarcXML-id of the person's role (mapping to MarcXML)"
+                },
+                "datacite": {
+                  "type": "string",
+                  "description": "Datacite-id of the person's role (mapping to Datacite)"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "Full name of the person"
+                },
+                "forename": {
+                  "type": "string",
+                  "description": "Forename"
+                },
+                "surname": {
+                  "type": "string",
+                  "description": "Last name"
+                },
+                "orcid_link": {
+                  "type": "string",
+                  "description": "url to the ORCiD-Entry of the person"
+                },
+                "gnd_link": {
+                  "type": "string",
+                  "description": "url to the GND-Entry of the person"
+                },
+                "name_forms": {
+                  "type": "array",
+                  "description": "List of available names for this person. ONLY VISIBLE IF edit=true.",
+                  "items": {
+                    "type": "object",
+                    "description": "Entry for a name of this person",
+                    "examples": [
+                      {
+                        "value": "Sann, Manuela",
+                        "name_no": 1,
+                        "selected": true
+                      },
+                      {
+                        "value": "Sann, M.",
+                        "name_no": 2,
+                        "selected": false
+                      }
+                    ],
+                    "required": [
+                      "value",
+                      "name_no",
+                      "selected"
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "description": "Full name"
+                      },
+                      "name_no": {
+                        "type": "integer",
+                        "description": "no. to identify this entry"
+                      },
+                      "selected": {
+                        "type": "boolean",
+                        "description": "if this name of the person is selected for this publication"
+                      }
+                    }
+                  }
+                },
+                "affiliations": {
+                  "type": "array",
+                  "description": "List of affiliations of this person regarding this publication",
+                  "items": {
+                    "type": "object",
+                    "description": "Entry for an affiliation",
+                    "examples": [
+                      {
+                        "norm_id": 2672,
+                        "value": "Evolutionsbiologie & Ökologie",
+                        "lifetime": "2001 - 2006",
+                        "link": "https://freidok.uni-freiburg.de/inst/2672",
+                        "sup_no": 1
+                      }
+                    ],
+                    "required": [
+                      "norm_id",
+                      "value",
+                      "sup_no",
+                      "link"
+                    ],
+                    "properties": {
+                      "norm_id": {
+                        "type": "integer",
+                        "description": "FreiDok plus identifier for the insitutiton"
+                      },
+                      "value": {
+                        "type": "string",
+                        "description": "Name of the institution"
+                      },
+                      "sup_no": {
+                        "type": "integer",
+                        "description": "Footnote-number matching to an entry in 'affiliations_list'"
+                      },
+                      "lifetime": {
+                        "type": "string",
+                        "description": "Lifetime of the insitution. ONLY VISIBLE IF edit=true."
+                      },
+                      "link": {
+                        "type": "string",
+                        "description": "Link to the institution's landingpage in FreiDok plus. NOT NEEDED?"
+                      }
+                    }
+                  }
+                },
+                "author_function": {
+                  "type": "object",
+                  "description": "Function of this person for this publication",
+                  "examples": [
+                    {
+                      "sup_no": "a",
+                      "type": "first_author",
+                      "value": "Erst-Autor"
+                    }
+                  ],
+                  "required": [
+                    "type",
+                    "value",
+                    "sup_no"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "attribute-id of the function"
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "language-dependend description of the function"
+                    },
+                    "sup_no": {
+                      "type": "string",
+                      "description": "Footnote-character matching to an entry in 'functions_list'"
+                    }
+                  }
+                },
+                "import_info": {
+                  "type": "object",
+                  "description": "information about the process of choosing this person for the publication",
+                  "examples": [
+                    {
+                      "matching_type": "orcid",
+                      "orcid_imported": "0000-1234-1234-1323",
+                      "gnd_imported": "1108295533"
+                    }
+                  ],
+                  "required": [
+                    "matching_type",
+                    "orcid_imported",
+                    "gnd_imported"
+                  ],
+                  "properties": {
+                    "matching_type": {
+                      "type": "string",
+                      "description": "tells, how the person was chosen: orcid/gnd/name/user/admin"
+                    },
+                    "orcid_imported": {
+                      "type": "string",
+                      "description": "ORCiD, that was provided by import-data"
+                    },
+                    "gnd_imported": {
+                      "type": "string",
+                      "description": "GND-No, that was provided by import-data"
+                    }
+                  }
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "persons_stat": {
+            "type": "object",
+            "description": "Additional statistical information about the persons for this publication, e.g. total number of persons.",
+            "examples": [
+              {
+                "total_count": 6,
+                "additional_count": 1
+              }
+            ],
+            "required": [
+              "total_count",
+              "additional_count"
+            ],
+            "properties": {
+              "total_count": {
+                "type": "integer",
+                "description": "Total number of persons belonging to this publication."
+              },
+              "additional_count": {
+                "type": "integer",
+                "description": "Number of persons, which are not shown, because parameter maxPers was reached."
+              }
+            }
+          },
+          "affiliations_list": {
+            "type": "array",
+            "description": "List of affiliations used by persons in this publication.",
+            "items": {
+              "type": "object",
+              "description": "Entry for an affiliation.",
+              "examples": [
+                {
+                  "norm_id": 2672,
+                  "value": "Evolutionsbiologie & Ökologie",
+                  "lifetime": "2001 - 2006",
+                  "link": "https://freidok.uni-freiburg.de/inst/2672",
+                  "sup_no": 1
+                }
+              ],
+              "required": [
+                "norm_id",
+                "value",
+                "sup_no",
+                "lifetime",
+                "link"
+              ],
+              "properties": {
+                "norm_id": {
+                  "type": "integer",
+                  "description": "FreiDok plus identifier for the insitutiton"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "Name of the institution"
+                },
+                "sup_no": {
+                  "type": "integer",
+                  "description": "Footnote-number matching to sup_no of a person's 'affiliations'-list"
+                },
+                "lifetime": {
+                  "type": "string",
+                  "description": "Lifetime of the insitution."
+                },
+                "link": {
+                  "type": "string",
+                  "description": "Link to the institution's landingpage in FreiDok plus."
+                }
+              }
+            }
+          },
+          "functions_list": {
+            "type": "array",
+            "description": "List of functions used by persons in this publication.",
+            "items": {
+              "type": "object",
+              "description": "Entry for a function",
+              "examples": [
+                {
+                  "type": "first_author",
+                  "value": "Erst-Autor",
+                  "sup_no": "a"
+                }
+              ],
+              "required": [
+                "type",
+                "value",
+                "sup_no"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of the function"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "language-dependend description of the function"
+                },
+                "sup_no": {
+                  "type": "string",
+                  "description": "Footnote-character matching to sup_no of a person's 'author_function'"
+                }
+              }
+            }
+          },
+          "institutions": {
+            "type": "array",
+            "description": "List of contributing institutions",
+            "items": {
+              "type": "object",
+              "description": "Entry for an institution",
+              "examples": [
+                {
+                  "norm_id": 2039,
+                  "value": "Freiburger Materialforschungszentrum",
+                  "type": "contributor",
+                  "type_value": "Beteiligte Körperschaft",
+                  "link": "https://freidok.uni-freiburg.de/inst/2039",
+                  "datacite": "Other",
+                  "marcxml": "ctb",
+                  "lifetime": "2001 - ",
+                  "grouping": 1
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "norm_id",
+                "value",
+                "link"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of the institution's role"
+                },
+                "marcxml": {
+                  "type": "string",
+                  "description": "MarcXML-id of the institution's role (mapping to MarcXML)"
+                },
+                "datacite": {
+                  "type": "string",
+                  "description": "Datacite-id of the institution's role (mapping to Datacite)"
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "language-dependend description of the institution's role"
+                },
+                "norm_id": {
+                  "type": "integer",
+                  "description": "id of the institution in FreiDok plus"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "Name of the institution"
+                },
+                "link": {
+                  "type": "string",
+                  "description": "url to the institution's landingpage in FreiDok plus"
+                },
+                "lifetime": {
+                  "type": "string",
+                  "description": "Lifetime of the insitution. ONLY VISIBLE IF edit=true."
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          },
+          "relations": {
+            "type": "array",
+            "description": "TODO. An explanation about the purpose of this instance.",
+            "items": {
+              "type": "object",
+              "description": "An explanation about the purpose of this instance.",
+              "examples": [
+                {
+                  "type": "funded_by",
+                  "type_value": "gefördert durch",
+                  "target": "43",
+                  "target_type": "freidok_project",
+                  "target_type_value": "Freidok Projekt",
+                  "value": "Open Access-Publikationsfonds für die Universität Freiburg",
+                  "title": "Open Access-Publikationsfonds f\u00fcr die Universit\u00e4t Freiburg (2000 - 2002)",
+                  "link": "https://freidok.uni-freiburg.de/proj/43"
+                },
+                {
+                  "type": "is_part_of",
+                  "type_value": "ist Teil von",
+                  "target": "2",
+                  "target_type": "freidok",
+                  "target_type_value": "Freidok Titel",
+                  "order": "12",
+                  "order_type": "issue",
+                  "order_type_value": "Heft",
+                  "value": "Relaxation von Polymeren unter räumlichen Einschränkungen",
+                  "title": "Relaxation von Polymeren unter r\u00e4umlichen Einschr\u00e4nkungen \/ Martin Koch [Autor] ... - 1997",
+                  "link": "https://freidok.uni-freiburg.de/data/2"
+                },
+                {
+                  "type": "references",
+                  "type_value": "referenziert",
+                  "target": "10.1234/233232313",
+                  "target_type": "doi",
+                  "target_type_value": "DOI",
+                  "value": "Wissenschaftliche Arbeit XY",
+                  "title": "Wissenschaftliche Arbeit XY \/ AutorXY [Autor] ... 1999",
+                  "link": "https://doi.org/10.1234/233232313"
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "target_type",
+                "target_type_value",
+                "target",
+                "value",
+                "title",
+                "link"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "target_type": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "target_type_value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "target": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                }
+              },
+              "link": {
+                "type": "string",
+                "description": "An explanation about the purpose of this instance."
+              }
+            }
+          },
+          "reverse_relations": {
+            "type": "array",
+            "description": "TODO. An explanation about the purpose of this instance.",
+            "items": {
+              "type": "object",
+              "description": "An explanation about the purpose of this instance.",
+              "examples": [
+                {
+                  "type": "is_new_version_of",
+                  "type_value": "hat eine neuere Version",
+                  "norm_id": 16161,
+                  "value": "Molecular diagnosis of anti-laminin 332 (epiligrin) mucous membrane pemphigoid",
+                  "title": "Molecular diagnosis of anti-laminin 332 (epiligrin) mucous membrane pemphigoid \/ Roxana Chiorean [Autor] ... - 2018",
+                  "link": "https://freidok.uni-freiburg.de/data/16161"
+                },
+                {
+                  "order_type": "volume",
+                  "order_type_value": "Band",
+                  "type": "is_part_of",
+                  "type_value": "enthält",
+                  "norm_id": 3,
+                  "value": "Hochgradig nahgeordnete Bisdiazene und ihre Oxide 3",
+                  "title": "Hochgradig nahgeordnete Bisdiazene und ihre Oxide 3 \/ Kai Michael Exner [Autor] ... - 1998",
+                  "link": "https://freidok.uni-freiburg.de/data/3",
+                  "order": "2"
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "norm_id",
+                "value",
+                "title",
+                "link"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "norm_id": {
+                  "type": "integer",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "link": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                }
+              }
+            }
+          },
+          "source_compilation": {
+            "type": "array",
+            "description": "TODO",
+            "items": {
+              "type": "object",
+              "description": "An explanation about the purpose of this instance.",
+              "examples": [
+                {
+                  "source_id_type": "isbn",
+                  "source_id_type_value": "ISBN",
+                  "source_id": "123-891471-2148",
+                  "value": "BMC evolutionary biology, London 2018",
+                  "title": "BMC evolutionary biology",
+                  "link": "https:\/\/katalog.ub.uni-freiburg.de\/link?sb=14123-891471-2148",
+                  "persons": "Peter Pan [Hrsg.]",
+                  "edition": "Second Edition",
+                  "place": "London",
+                  "publisher": "BioMed Central",
+                  "year": 2018,
+                  "page": "71",
+                  "series": "Sammelband der Welt",
+                  "volume": "2",
+                  "issue": "3",
+                  "series2": "Tagungsband Natur",
+                  "volume2": "22",
+                  "issue2": "33"
+                }
+              ],
+              "required": [
+                "value",
+                "title",
+                "source_id",
+                "source_id_type"
+              ],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "source_id": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "source_id_type": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "source_id_type_value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "persons": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "edition": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "place": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "publisher": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "year": {
+                  "type": "integer",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "link": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "series": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "volume": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "issue": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "page": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "series2": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "volume2": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "issue2": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                }
+              }
+            }
+          },
+          "source_journal": {
+            "type": "array",
+            "description": "TODO",
+            "items": {
+              "type": "object",
+              "description": "An explanation about the purpose of this instance.",
+              "examples": [
+                {
+                  "source_id_type": "issn",
+                  "source_id_type_value": "ISSN",
+                  "source_id": "1471-2148",
+                  "value": "BMC evolutionary biology, London 2018",
+                  "title": "BMC evolutionary biology",
+                  "link": "https:\/\/katalog.ub.uni-freiburg.de\/link?ss=1471-2148",
+                  "place": "London",
+                  "publisher": "BioMed Central",
+                  "year": 2018,
+                  "volume": "18",
+                  "issue": "1",
+                  "page": "71"
+                }
+              ],
+              "required": [
+                "value",
+                "title",
+                "source_id",
+                "source_id_type"
+              ],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "source_id": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "source_id_type": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "source_id_type_value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "place": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "publisher": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "year": {
+                  "type": "integer",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "link": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "series": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "volume": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "issue": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "page": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                }
+              }
+            }
+          },
+          "publisher": {
+            "type": "object",
+            "description": "Information about the publisher. ONLY VISIBLE IF pubtype IN (book, collection, periodical)",
+            "examples": [
+              {
+                "place": "Berlin",
+                "value": "Springer"
+              }
+            ],
+            "required": [
+              "place",
+              "value"
+            ],
+            "properties": {
+              "place": {
+                "type": "string",
+                "description": "place"
+              },
+              "value": {
+                "type": "string",
+                "description": "Name of the publisher"
+              }
+            }
+          },
+          "series": {
+            "type": "object",
+            "description": "Information about the series.",
+            "examples": [
+              {
+                "value": "1",
+                "volume": "2",
+                "issue": "23"
+              }
+            ],
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "type": "string",
+                "description": "Name of the series"
+              },
+              "volume": {
+                "type": "string",
+                "description": "Number of name of volume"
+              },
+              "issue": {
+                "type": "string",
+                "description": "Number of name of issue"
+              }
+            }
+          },
+          "contract": {
+            "type": "object",
+            "description": "information about contract. ONLY VISIBLE FOR ADMINS.",
+            "examples": [
+              {
+                "value": "Dieser Vertrag regelt...",
+                "type": "contract_author",
+                "type_value": "Autorenvertrag",
+                "signed_by": "eppn@uni-freiburg.de",
+                "signed_by_type": "shib_login",
+                "signed_by_type_value": "Login per Shibboleth"
+              }
+            ],
+            "required": [
+              "type",
+              "type_value",
+              "value",
+              "signed_by_type",
+              "signed_by_type_value",
+              "signed_by"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "attribute-id for the type of contract"
+              },
+              "type_value": {
+                "type": "string",
+                "description": "language-dependend description for the type of contract"
+              },
+              "value": {
+                "type": "string",
+                "description": "the text of the contract. ONLY VISIBLE IF edit=true"
+              },
+              "signed_by_type": {
+                "type": "string",
+                "description": "attribute-id for the type of signing"
+              },
+              "signed_by_type_value": {
+                "type": "string",
+                "description": "language-dependend description for the type of signing"
+              },
+              "signed_by": {
+                "type": "string",
+                "description": "eppn or freidok-person-id of the signing person"
+              }
+            }
+          },
+          "license_metadata": {
+            "type": "object",
+            "description": "license-information applying to metadata",
+            "examples": [
+              {
+                "type": "cc_0",
+                "type_value": "Creative Commons CC0",
+                "link": "http://creativecommons.org/about/cc0"
+              }
+            ],
+            "required": [
+              "type",
+              "type_value",
+              "link"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "attribute-id of the licence-type"
+              },
+              "type_value": {
+                "type": "string",
+                "description": "language-dependend description of the licence-type"
+              },
+              "link": {
+                "type": "string",
+                "description": "link to further information about the license"
+              }
+            }
+          },
+          "contact": {
+            "type": "array",
+            "description": "List of facilities of contact to the submitter of the publication",
+            "items": {
+              "type": "object",
+              "description": "Entry for a contact-facility",
+              "examples": [
+                {
+                  "type": "email",
+                  "type_value": "Email",
+                  "value": "email@example.com"
+                },
+                {
+                  "type": "contact",
+                  "type_value": "Kontakt",
+                  "value": "Tel: 01234 5321"
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "value"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "attribute-id of contact-type"
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "language-dependend description of contact-type"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "contact-information"
+                }
+              }
+            }
+          },
+          "preview_image": {
+            "type": "object",
+            "description": "TODO. An explanation about the purpose of this instance.",
+            "examples": [
+              {
+                "thumbnail200": "https://freidok.uni-freiburg.de/getPreviewImage/16160_200.png",
+                "link": "https://freidok.uni-freiburg.de/getPreviewImage/16160.png",
+                "thumbnail90": "https://freidok.uni-freiburg.de/getPreviewImage/16160_90.png",
+                "thumbnail900": "https://freidok.uni-freiburg.de/getPreviewImage/16160_900.png"
+              }
+            ],
+            "required": [
+              "thumbnail90",
+              "thumbnail200",
+              "thumbnail900",
+              "link"
+            ],
+            "properties": {
+              "thumbnail90": {
+                "type": "string",
+                "description": "An explanation about the purpose of this instance."
+              },
+              "thumbnail200": {
+                "type": "string",
+                "description": "An explanation about the purpose of this instance."
+              },
+              "thumbnail900": {
+                "type": "string",
+                "description": "An explanation about the purpose of this instance."
+              },
+              "link": {
+                "type": "string",
+                "description": "An explanation about the purpose of this instance."
+              }
+            }
+          },
+          "files_stat": {
+            "type": "object",
+            "description": "Additional statistical Information about the files for this publication, e.g. number of available files.",
+            "examples": [
+              {
+                "count": 2
+              }
+            ],
+            "required": [
+              "count"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "description": "Total number of files for this publication."
+              }
+            }
+          },
+          "files_external": {
+            "type": "array",
+            "description": "TODO. An explanation about the purpose of this instance.",
+            "items": {
+              "type": "object",
+              "description": "An explanation about the purpose of this instance.",
+              "examples": [
+                {
+                  "value": "http://www.example.com/examplepath/examplefile.pdf",
+                  "link": "http://www.example.com/examplepath/examplefile.pdf",
+                  "type": "landingpage_invisible",
+                  "type_value": "nicht auf Landingpage sichtbar"
+                },
+                {
+                  "value": "http://www.example.com/examplepath/examplefile2.pdf",
+                  "link": "http://www.example.com/examplepath/examplefile2.pdf",
+                  "type": "landingpage_visible",
+                  "type_value": "auf Landingpage sichtbar"
+                }
+              ],
+              "required": [
+                "value",
+                "type",
+                "type_value",
+                "link"
+              ],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "link": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                }
+              }
+            }
+          },
+          "files": {
+            "type": "array",
+            "description": "TODO. An explanation about the purpose of this instance.",
+            "items": {
+              "type": "object",
+              "description": "An explanation about the purpose of this instance.",
+              "examples": [
+                {
+                  "preview_image": "https://freidok.uni-freiburg.de/getPreviewImage/file/219021_90.png",
+                  "label": null,
+                  "type": "document",
+                  "type_value": "veröffentlichtes Dokument / veröffentlichte Publikation",
+                  "filename": "s12862-018-1155-8.pdf",
+                  "md5sum": "8948f883a89499c930a03039b33",
+                  "_state": "A",
+                  "_state_value": "aktiv",
+                  "link": "https://freidok.uni-freiburg.de/file/219021",
+                  "license": {
+                    "type": "cc_by",
+                    "link": "http://creativecommons.org/licenses/by-nc-nd/4.0/deed.de",
+                    "type_value": "Creative Commons CC-BY",
+                    "__value": "Diese Lizenz bestimmt ...",
+                    "cc_by_name": "Autor1"
+                  },
+                  "filesize": 1500,
+                  "filesize_display": "1,5 kB",
+                  "embargo": {
+                    "value": "23.08.2018",
+                    "date": "2018-08-23"
+                  },
+                  "grouping": 1
+                },
+                {
+                  "preview_image": "https://freidok.uni-freiburg.de/getPreviewImage/file/219023_90.png",
+                  "label": "Additional files",
+                  "type": "original",
+                  "type_value": "archiviertes Dokument",
+                  "filename": "12862_2018_1155_MOESM.7z",
+                  "md5sum": "8bd948f883a13876540a03039a23",
+                  "_state": "I",
+                  "_state_value": "inaktiv",
+                  "link": "https://freidok.uni-freiburg.de/file/219023",
+                  "license": {
+                    "type": "cc_by",
+                    "link": "http://creativecommons.org/licenses/by-nc-nd/4.0/deed.de",
+                    "type_value": "Creative Commons CC-BY",
+                    "__value": "Diese Lizenz bestimmt ...",
+                    "cc_by_name": "Autor1"
+                  },
+                  "filesize": 2500,
+                  "filesize_display": "2,5 kB",
+                  "embargo": {
+                    "value": "23.08.2018",
+                    "date": "2018-08-23"
+                  },
+                  "grouping": 2
+                }
+              ],
+              "required": [
+                "type",
+                "type_value",
+                "label",
+                "filename",
+                "link",
+                "filesize",
+                "filesize_display",
+                "preview_image",
+                "md5sum",
+                "license",
+                "embargo",
+                "_state",
+                "_state_value"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "type_value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "label": {
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "filename": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "link": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "filesize": {
+                  "type": "integer",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "filesize_display": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "preview_image": {
+                  "type": "object",
+                  "description": "TODO. An explanation about the purpose of this instance.",
+                  "properties": {
+                    "thumbnail90": {
+                      "type": "string",
+                      "description": "An explanation about the purpose of this instance."
+                    },
+                    "thumbnail200": {
+                      "type": "string",
+                      "description": "An explanation about the purpose of this instance."
+                    },
+                    "thumbnail900": {
+                      "type": "string",
+                      "description": "An explanation about the purpose of this instance."
+                    },
+                    "link": {
+                      "type": "string",
+                      "description": "An explanation about the purpose of this instance."
+                    }
+                  }
+                },
+                "md5sum": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "license": {
+                  "type": "object",
+                  "description": "An explanation about the purpose of this instance.",
+                  "examples": [
+                    {
+                      "type": "cc_by",
+                      "link": "http://creativecommons.org/licenses/by-nc-nd/4.0/deed.de",
+                      "type_value": "Creative Commons CC-BY",
+                      "__value": "Diese Lizenz bestimmt ...",
+                      "cc_by_name": "Autor1"
+                    }
+                  ],
+                  "required": [
+                    "type",
+                    "type_value",
+                    "cc_by_name",
+                    "link",
+                    "__value"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "An explanation about the purpose of this instance."
+                    },
+                    "type_value": {
+                      "type": "string",
+                      "description": "An explanation about the purpose of this instance."
+                    },
+                    "cc_by_name": {
+                      "type": "string",
+                      "description": "An explanation about the purpose of this instance."
+                    },
+                    "link": {
+                      "type": "string",
+                      "description": "An explanation about the purpose of this instance."
+                    },
+                    "__value": {
+                      "type": "string",
+                      "description": "An explanation about the purpose of this instance."
+                    }
+                  }
+                },
+                "embargo": {
+                  "type": "object",
+                  "description": "An explanation about the purpose of this instance.",
+                  "examples": [
+                    {
+                      "value": "23.08.2018",
+                      "date": "2018-08-23"
+                    }
+                  ],
+                  "required": [
+                    "date",
+                    "value"
+                  ],
+                  "properties": {
+                    "date": {
+                      "type": "string",
+                      "description": "An explanation about the purpose of this instance."
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "An explanation about the purpose of this instance."
+                    }
+                  }
+                },
+                "_state": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "_state_value": {
+                  "type": "string",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "grouping": {
+                  "type": "integer",
+                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                }
+              }
+            }
+          }
+        }
+      },
+      "facets": {
+        "type": "object",
+        "description": "facet-data for the current query. ONLY VISIBLE IF facet=true.",
+        "required": [
+          "pubtype",
+          "publication_year"
+        ],
+        "properties": {
+          "pubtype": {
+            "type": "array",
+            "description": "List of pubtype-facets.",
+            "items": {
+              "type": "object",
+              "description": "Entry for a pubtype-facet",
+              "examples": [
+                {
+                  "id": "doctoral_thesis",
+                  "name": "Dissertation",
+                  "count": 526
+                },
+                {
+                  "id": "article",
+                  "name": "Wissenschaftlicher Artikel",
+                  "count": 35
+                },
+                {
+                  "id": "bachelor_thesis",
+                  "name": "Bachelorarbeit",
+                  "count": 7
+                }
+              ],
+              "required": [
+                "id",
+                "name",
+                "count"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "attribute-id of the pubtype"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "langauge-dependend description of the pubtype"
+                },
+                "count": {
+                  "type": "integer",
+                  "description": "number of searchresults with this pubtype"
+                }
+              }
+            }
+          },
+          "publication_year": {
+            "type": "array",
+            "description": "List of publication-year-facets.",
+            "items": {
+              "type": "object",
+              "description": "Entry for a publication-year-facet",
+              "examples": [
+                {
+                  "name": "2019",
+                  "count": 36,
+                  "id": 2019
+                },
+                {
+                  "id": 2018,
+                  "name": "2018",
+                  "count": 33
+                },
+                {
+                  "name": "2017",
+                  "count": 50,
+                  "id": 2017
+                }
+              ],
+              "required": [
+                "id",
+                "name",
+                "count"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "value of the publication-year"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "description of the publication-year"
+                },
+                "count": {
+                  "type": "integer",
+                  "description": "number of searchresults with this publication-year"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
