@@ -79,8 +79,10 @@ class PublicationsTemplateExporter(PublicationsExporter):
 
         if template_file:
             template = self._load_template(template_file)
-        else:
+        elif self.default_template:
             template = self._load_default_template()
+        else:
+            raise ValueError("No template specified")
 
         with opens(outfile, mode='w', encoding='utf-8') as fout:
             fout.write(template.render(context))
