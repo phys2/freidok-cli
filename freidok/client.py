@@ -119,6 +119,13 @@ class FreidokApiClient(FreiDokReader):
         add_param(params, 'persId', list2str(pers_ids))
         add_param(params, 'projId', list2str(proj_ids))
         add_param(params, 'titleSearch', title)
+
+        # some parameters are required (for this client, at least)
+        if not params:
+            raise ValueError(
+                'Missing parameters! At least one of these parameters is required: '
+                'ids, inst_ids, pers_ids, proj_ids, title')
+
         add_param(params, 'field', list2str(fields))
         add_param(params, 'maxPers', maxpers)
         add_param(params, 'maxRows', maxitems)
@@ -134,10 +141,6 @@ class FreidokApiClient(FreiDokReader):
             add_param(params, 'yearFrom', year_from)
             add_param(params, 'yearTo', year_to)
 
-        if not params:
-            raise ValueError(
-                'Missing parameters! At least one of these parameters is required: '
-                'ids, inst_ids, title')
         if kwargs:
             params.update(kwargs)
         r = self._get(url, params)
