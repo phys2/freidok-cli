@@ -167,6 +167,10 @@ def arguments():
         help='Retrieve publications associated with these institution IDs')
 
     argp_pub.add_argument(
+        '--proj-id', type=intlist, metavar='ID[,ID,..]',
+        help='Retrieve publications associated with these project IDs')
+
+    argp_pub.add_argument(
         '--title', metavar='TERM',
         help='Retrieve publications with a title that contain TERM')
 

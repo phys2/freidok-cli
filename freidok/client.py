@@ -102,6 +102,7 @@ class FreidokApiClient(FreiDokReader):
             ids: list[int] = None,
             inst_ids: list[int] = None,
             pers_ids: list[int] = None,
+            proj_ids: list[int] = None,
             title: str = None,
             year_from: int = 0,
             year_to: int = 0,
@@ -116,6 +117,7 @@ class FreidokApiClient(FreiDokReader):
         add_param(params, 'publicationId', list2str(ids))
         add_param(params, 'instId', list2str(inst_ids))
         add_param(params, 'persId', list2str(pers_ids))
+        add_param(params, 'projId', list2str(proj_ids))
         add_param(params, 'titleSearch', title)
         add_param(params, 'field', list2str(fields))
         add_param(params, 'maxPers', maxpers)
