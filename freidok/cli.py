@@ -96,11 +96,21 @@ def arguments():
         else:
             return items
 
-    def choice_type(value, allowed_values: list | set):
-        if value in allowed_values:
+    def simple_choice_type(value, allowed: list | set):
+        """Like argparse 'choice', but doesn't flood usage string with choices"""
+        if value in allowed:
             return value
         else:
             raise argparse.ArgumentTypeError(f"Value not allowed: {value}")
+
+    def language_type(value):
+        items = str2list(value)
+        for item in items:
+            if not (m := re.match(r'^[a-zA-Z]{3}$', item)):
+                raise argparse.ArgumentTypeError(
+                    f"Invalid 3-character language code: '{item}'")
+        else:
+            return items
 
     env_url = os.getenv('FREIDOK_URL')
     max_rows_type = partial(int_minmax_type, xmin=1, xmax=100)
@@ -128,6 +138,10 @@ def arguments():
 
     # argp_api.add_argument('--startrow', default=0, type=int,
     #                       help='Row index to start retrieval from (for pagination)')
+
+    argp_api.add_argument(
+        '--langs', type=language_type, default='eng,deu',
+        help='Preferred languages (3-character code, decreasing preference)')
 
     # subparser: publications
 
