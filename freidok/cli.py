@@ -65,6 +65,7 @@ def env2dict(env_prefix: str, key_mapper: Callable = str,
 
 
 def load_publication_fieldsets():
+    """Update pre-defined sets of fields from environment"""
     d = env2dict(
         'FREIDOK_FIELDSET_PUBLICATION_',
         key_mapper=str.lower,
@@ -246,7 +247,6 @@ def arguments():
 
 def run():
     args = arguments()
-    # print(args)
     args.func(args)
 
 
@@ -287,6 +287,7 @@ def create_freidok_client(args):
 def get_publications(args):
     client = create_freidok_client(args)
 
+    # year params
     if args.years:
         year_from = args.years[0]
         year_to = args.years[1] if len(args.years) > 1 else year_from
@@ -294,6 +295,7 @@ def get_publications(args):
         year_from = None
         year_to = None
 
+    # field params
     if args.fields:
         fields = args.fields
     elif args.fieldset:
@@ -327,17 +329,13 @@ def get_publications(args):
 
     publist = Publications(**data)
 
-    # modify publication list
-
     if args.author_abbrev:
-        modify.shorten_firstnames(publist, sep=args.author_abbrev)
-
+        modify.shorten_author_firstnames(publist, sep=args.author_abbrev)
     # add pre-formatted authors list to each publication object (_extras_authors)
     modify.add_author_list_string(
         publist, abbrev=args.author_abbrev, reverse=args.author_reverse,
         sep=args.author_sep)
-
-    # sort titles by preferred language
+    # sort titles, abstracts, etc. by preferred language
     modify.sort_items_by_language(publist, preferred=args.langs)
     # sort publication links by type
     modify.sort_links_by_type(publist, preferred=['doi'])

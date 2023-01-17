@@ -9,11 +9,12 @@ from requests.utils import get_encoding_from_headers
 from freidok.utils import list2str
 
 
-def create_headers(user_agent, user_email=None, extra_headers=None):
+def create_headers(user_agent=None, user_email=None, extra_headers=None):
     """Build HTTP header dictionary"""
-    headers = {
-        'User-Agent': user_agent
-    }
+    headers = {}
+
+    if user_agent:
+        headers['User-Agent'] = user_agent
 
     if user_email:
         headers['X-User-Email'] = user_email
@@ -60,6 +61,16 @@ class FreidokApiClient(FreiDokReader):
     def __init__(self, base_url: str, user_agent: str, user_email=None,
                  extra_headers: dict[str, str] = None, default_max_items: int = 0,
                  dryrun=False):
+        """
+        FreiDok API client.
+
+        :param base_url: API endpoint
+        :param user_agent: User agent string.
+        :param user_email: User email to include in request headers
+        :param extra_headers: Additional header values
+        :param default_max_items: Default row limit
+        :param dryrun: If set to true, print request but don't send anything
+        """
         if not base_url:
             raise ValueError("Invalid Freidok API URL")
 
@@ -70,6 +81,7 @@ class FreidokApiClient(FreiDokReader):
         self.dryrun = dryrun
 
     def _print_prep_request(self, req, encoding=None):
+        """Print a prepared request"""
         if not encoding:
             encoding = get_encoding_from_headers(req.headers)
         if body := req.body:
@@ -111,8 +123,25 @@ class FreidokApiClient(FreiDokReader):
             maxitems: int = 0,
             startitem: int = 0,
             **kwargs):
+        """
+        Retrieve publcations from API.
 
+        :param ids: Retrieve by publication IDs
+        :param inst_ids: Retrieve by institution IDs
+        :param pers_ids: Retrieve by person/author IDs
+        :param proj_ids: Retrieve by project IDs
+        :param title: Require publication titles to contain this value
+        :param year_from: Filter out publications from before this year
+        :param year_to: Filter out publications from after this year
+        :param fields: Fields to include in the response (see API documentation)
+        :param maxpers: Limit the number of reported authors
+        :param maxitems: Limit the number of returned items
+        :param startitem: Offset for item retrieval
+        :param kwargs: Additional API parameters
+        :return: Dictionary with deserialized response
+        """
         url = self.endpoint + '/publications'
+
         params = {}
         add_param(params, 'publicationId', list2str(ids))
         add_param(params, 'instId', list2str(inst_ids))
@@ -131,7 +160,7 @@ class FreidokApiClient(FreiDokReader):
         add_param(params, 'maxRows', maxitems)
         add_param(params, 'start', startitem)
 
-        # years
+        # add date params
         if year_from > 0:
             if year_to > 0:
                 if year_to < year_from:
@@ -143,6 +172,7 @@ class FreidokApiClient(FreiDokReader):
 
         if kwargs:
             params.update(kwargs)
+
         r = self._get(url, params)
         return r.json()
 
@@ -174,7 +204,6 @@ class FreidokFileReader(FreiDokReader):
     def _get(self):
         with open(self.endpoint) as f:
             return json.load(f)
-            # return DummyRequest(data)
 
     def get_institutions(self, *args, **kwargs):
         if args or kwargs:

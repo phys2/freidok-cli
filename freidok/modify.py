@@ -38,7 +38,7 @@ def sort_links_by_type(publist: Publications, preferred: list[str]):
             pub.pub_ids.sort(key=lambda p: preference_index(p.type, preferred))
 
 
-def shorten_firstnames(publist: Publications, sep=''):
+def shorten_author_firstnames(publist: Publications, sep=''):
     """Shorten author first names"""
     for pub in publist.docs:
         for pers in pub.persons:
