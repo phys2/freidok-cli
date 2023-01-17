@@ -177,7 +177,9 @@ def arguments():
 
     argp_pub.add_argument(
         '--format', choices=['markdown', 'html', 'json'],
-        help='Output file format. Ignored if --template is provided.')
+        help='Output file format. Ignored if --template is provided. '
+             'For json, some post-retrieval operations (e.g. author name modifications)'
+             'are not available yet.')
 
     argp_pub.add_argument(
         '--template', metavar='FILE', type=Path,
@@ -214,27 +216,25 @@ def run():
     args.func(args)
 
 
-def output_file_and_format(args):
-    out_file = args.out or '-'
-
+def get_output_format(args):
     # template argument overrides any format arg
     if args.template:
-        return [out_file, ExportFormat.TEMPLATE]
+        return ExportFormat.TEMPLATE
 
     if args.format:
-        out_format = args.format
+        fmt = args.format
     elif args.out:
         match args.out.suffix.lower():
             case ('.htm' | '.html'):
-                out_format = ExportFormat.HTML
+                fmt = ExportFormat.HTML
             case '.md':
-                out_format = ExportFormat.MARKDOWN
+                fmt = ExportFormat.MARKDOWN
             case _:
-                out_format = ExportFormat.JSON
+                fmt = ExportFormat.JSON
     else:
-        out_format = ExportFormat.MARKDOWN
+        fmt = ExportFormat.MARKDOWN
 
-    return [out_file, out_format]
+    return fmt
 
 
 def create_freidok_client(args):
@@ -287,15 +287,20 @@ def get_publications(args):
     # sort publication links by type
     modify.sort_links_by_type(publist, preferred=['doi'])
 
-    outfile, outfmt = output_file_and_format(args)
+    outfile = args.out or '-'
+    outfmt = get_output_format(args)
     match outfmt:
-        case 'html':
+        case ExportFormat.HTML:
             PublicationsHtmlExporter.export(
                 publist, outfile, template_file=args.template)
-        case 'markdown':
+        case ExportFormat.MARKDOWN:
             PublicationsMarkdownExporter.export(
                 publist, outfile, template_file=args.template)
-        case 'json':
+        case ExportFormat.TEMPLATE:
+            exporter = PublicationsTemplateExporter()
+            exporter.export(
+                publist, outfile, template_file=args.template)
+        case ExportFormat.JSON:
             with opens(outfile, encoding='utf-8') as f:
                 json.dump(data, f)
         case _:
