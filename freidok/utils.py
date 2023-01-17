@@ -37,14 +37,6 @@ def movetofront(listobj: list[T], predicate: Callable[[T], bool]):
         listobj.insert(0, item)
 
 
-def preference_score(value, preferred_values: list):
-    """Return index of value in list of preferred values"""
-    try:
-        return preferred_values.index(value)
-    except ValueError:
-        return len(preferred_values) + 1
-
-
 @contextlib.contextmanager
 def opens(file=None, mode='w', stream=sys.stdout, **kwargs):
     """Open file for writing or fall back to stream"""

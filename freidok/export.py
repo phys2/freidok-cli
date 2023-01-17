@@ -4,18 +4,7 @@ from pathlib import Path
 import jinja2
 
 from freidok.models.api import Doc, Publications, Person
-from freidok.utils import first, preference_score, opens
-
-
-def sort_items_by_preferred_languages(publist: Publications,
-                                      preferred_langs: list[str]):
-    for pub in publist.docs:
-        pub.titles.sort(key=lambda t: preference_score(t.language, preferred_langs))
-
-
-def sort_links_by_preferred_type(publist: Publications, preferred_types: list[str]):
-    for pub in publist.docs:
-        pub.pub_ids.sort(key=lambda p: preference_score(p.type, preferred_types))
+from freidok.utils import first, opens
 
 
 class PublicationsExporter:

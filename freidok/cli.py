@@ -9,9 +9,10 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from freidok import modify
 from freidok.client import FreidokApiClient, FreidokFileReader
-from freidok.export import sort_items_by_preferred_languages, \
-    sort_links_by_preferred_type, PublicationsHtmlExporter, PublicationsMarkdownExporter
+from freidok.export import PublicationsHtmlExporter, \
+    PublicationsMarkdownExporter, PublicationsTemplateExporter
 from freidok.models.api import Publications
 from freidok.utils import str2list, opens
 
@@ -282,10 +283,9 @@ def get_publications(args):
     # modify publication list
 
     # sort titles by preferred language
-    preferred_langs = ['eng', 'deu']
-    sort_items_by_preferred_languages(publist, preferred_langs)
+    modify.sort_items_by_language(publist, preferred=args.langs)
     # sort publication links by type
-    sort_links_by_preferred_type(publist, preferred_types=['doi'])
+    modify.sort_links_by_type(publist, preferred=['doi'])
 
     outfile, outfmt = output_file_and_format(args)
     match outfmt:
