@@ -174,8 +174,16 @@ def arguments():
         help='Limit the number of listed authors')
 
     argp_pub.add_argument(
-        '--short-names', action='store_true',
-        help='Abbreviate first author names')
+        '--author-abbrev', metavar='STR', nargs='?', const='',
+        help='Abbreviate first author names [with given character]')
+
+    argp_pub.add_argument(
+        '--author-reverse', action='store_true',
+        help='Reverse author names, having last name come first')
+
+    argp_pub.add_argument(
+        '--author-sep', metavar='STR',
+        help='Separate author names with STR')
 
     group_fields = argp_pub.add_mutually_exclusive_group()
 
@@ -295,6 +303,14 @@ def get_publications(args):
     publist = Publications(**data)
 
     # modify publication list
+
+    if args.author_abbrev:
+        modify.shorten_firstnames(publist, sep=args.author_abbrev)
+
+    # add pre-formatted authors list to each publication object (_extras_authors)
+    modify.add_author_list_string(
+        publist, abbrev=args.author_abbrev, reverse=args.author_reverse,
+        sep=args.author_sep)
 
     # sort titles by preferred language
     modify.sort_items_by_language(publist, preferred=args.langs)
