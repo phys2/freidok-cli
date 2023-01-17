@@ -133,8 +133,13 @@ def arguments():
         help="Don't actually send API requests, just print query")
 
     argp_api.add_argument(
-        '--maxitems', metavar='N', default=0, type=max_rows_type,
+        '--maxitems', metavar='N', default=100,
+        type=partial(int_minmax_type, xmin=1, xmax=100),
         help='Maximum number of items to retrieve')
+
+    argp_api.add_argument(
+        '--startitem', metavar='N', default=0, type=int,
+        help='Start retrieval at this offset (useful for pagination)')
 
     # argp_api.add_argument('--startrow', default=0, type=int,
     #                       help='Row index to start retrieval from (for pagination)')
@@ -265,7 +270,7 @@ def create_freidok_client(args):
             base_url=args.source,
             user_agent=USER_AGENT,
             dryrun=args.dryrun,
-            default_max_rows=args.maxrows)
+            default_max_items=args.maxitems)
     else:
         reader = FreidokFileReader(file=args.source)
 
@@ -287,7 +292,16 @@ def get_publications(args):
     elif args.fieldset:
         fields = publication_fieldsets[args.fieldset]
     else:
-        fields = None
+        fields = publication_fieldsets['default']
+
+    # sort params
+    # todo: make sort parameters available on command line
+    sortfields = []
+    if 'publication_year' in fields:
+        sortfields.append('publication_year+desc')
+    if 'id' in fields:
+        sortfields.append('id+desc')
+    params = dict(sortfield=','.join(sortfields))
 
     data = client.get_publications(
         ids=args.id,
@@ -298,6 +312,9 @@ def get_publications(args):
         year_to=year_to,
         fields=fields,
         maxpers=args.maxpers,
+        maxitems=args.maxitems,
+        startitem=args.startitem,
+        **params,
     )
 
     publist = Publications(**data)

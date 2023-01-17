@@ -58,13 +58,13 @@ class FreiDokReader(metaclass=abc.ABCMeta):
 
 class FreidokApiClient(FreiDokReader):
     def __init__(self, base_url: str, user_agent: str, user_email=None,
-                 extra_headers: dict[str, str] = None, default_max_rows: int = 0,
+                 extra_headers: dict[str, str] = None, default_max_items: int = 0,
                  dryrun=False):
         if not base_url:
             raise ValueError("Invalid Freidok API URL")
 
         self.endpoint = base_url.rstrip('/')
-        self.default_max_rows = default_max_rows
+        self.default_max_items = default_max_items
         self.headers = create_headers(user_agent, user_email, extra_headers)
         self.timeout = 30
         self.dryrun = dryrun
@@ -83,9 +83,9 @@ class FreidokApiClient(FreiDokReader):
             print(body)
 
     def _get(self, url, params: dict[str, Any] = None):
-        # set default max_rows
-        if params and self.default_max_rows:
-            params.setdefault('maxRows', self.default_max_rows)
+        # set default max_rows value, is not already present
+        if params and self.default_max_items:
+            params.setdefault('maxRows', self.default_max_items)
 
         if self.dryrun:
             r = requests.Request('GET', url=url, headers=self.headers, params=params)
@@ -107,6 +107,8 @@ class FreidokApiClient(FreiDokReader):
             year_to: int = 0,
             fields: list[str] = None,
             maxpers: int = None,
+            maxitems: int = 0,
+            startitem: int = 0,
             **kwargs):
 
         url = self.endpoint + '/publications'
@@ -117,6 +119,8 @@ class FreidokApiClient(FreiDokReader):
         add_param(params, 'titleSearch', title)
         add_param(params, 'field', list2str(fields))
         add_param(params, 'maxPers', maxpers)
+        add_param(params, 'maxRows', maxitems)
+        add_param(params, 'start', startitem)
 
         # years
         if year_from > 0:
