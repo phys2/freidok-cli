@@ -311,6 +311,7 @@ def get_publications(args):
         ids=args.id,
         inst_ids=args.inst_id,
         pers_ids=args.pers_id,
+        proj_ids=args.proj_ids,
         title=args.title,
         year_from=year_from,
         year_to=year_to,
