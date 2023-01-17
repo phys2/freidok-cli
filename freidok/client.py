@@ -1,4 +1,6 @@
+import abc
 import json
+import warnings
 from typing import Any
 
 import requests
@@ -38,14 +40,28 @@ def add_param(d: dict[str, Any], name: str, value: Any, overwrite=True) -> None:
             d.setdefault(name, value)
 
 
-class FreidokClient:
+class FreiDokReader(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def __init__(self, endpoint: str):
+        self.endpoint = endpoint
+
+    @abc.abstractmethod
+    def get_publications(self):
+        pass
+
+    @abc.abstractmethod
+    def get_institutions(self):
+        pass
+
+
+class FreidokApiClient(FreiDokReader):
     def __init__(self, base_url: str, user_agent: str, user_email=None,
                  extra_headers: dict[str, str] = None, default_max_rows: int = 0,
                  dryrun=False):
         if not base_url:
             raise ValueError("Invalid Freidok API URL")
 
-        self.base_url = base_url.rstrip('/')
+        self.endpoint = base_url.rstrip('/')
         self.default_max_rows = default_max_rows
         self.headers = create_headers(user_agent, user_email, extra_headers)
         self.timeout = 30
@@ -91,7 +107,7 @@ class FreidokClient:
             maxpers: int = None,
             **kwargs):
 
-        url = self.base_url + '/publications'
+        url = self.endpoint + '/publications'
         params = {}
         add_param(params, 'publicationId', list2str(ids))
         add_param(params, 'instId', list2str(inst_ids))
@@ -120,7 +136,7 @@ class FreidokClient:
         return r.json()
 
     def get_institutions(self, ids: list[int] = None, name: str = None, **kwargs):
-        url = self.base_url + '/institutions'
+        url = self.endpoint + '/institutions'
         params = {}
         add_param(params, 'instId', list2str(ids))
         add_param(params, 'nameSearch', name)
@@ -142,9 +158,26 @@ class DummyRequest:
         return self.data
 
 
-class FreidokMockClient(FreidokClient):
+class FreidokFileReader(FreiDokReader):
+    """
+    Read FreiDok data from file.
 
-    def _get(self, url, params: dict[str, Any] = None):
-        with open('response_fieldset_full.json') as f:
-            data = json.load(f)
-            return DummyRequest(data)
+    Currently, NO FILTERING will be applied and all data returned from file.
+    """
+    def __init__(self, file: str):
+        self.endpoint = file
+
+    def _get(self):
+        with open(self.endpoint) as f:
+            return json.load(f)
+            # return DummyRequest(data)
+
+    def get_institutions(self, *args, **kwargs):
+        if args or kwargs:
+            warnings.warn("Filtering is not yet supported for file sources")
+        return self._get()
+
+    def get_publications(self, *args, **kwargs):
+        if args or kwargs:
+            warnings.warn("Filtering is not yet supported for file sources")
+        return self._get()

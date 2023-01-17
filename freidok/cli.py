@@ -1,15 +1,19 @@
 import argparse
+import json
 import os
 import re
 from collections.abc import Callable
+from enum import Enum
 from functools import partial
+from pathlib import Path
 
 from dotenv import load_dotenv
 
-from freidok.client import FreidokClient, FreidokMockClient
-from freidok.format import PublicationsHtmlExporter, AuthorsListStyle
-from freidok.models.freidok_json_api import Publications
-from freidok.utils import str2list
+from freidok.client import FreidokApiClient, FreidokFileReader
+from freidok.export import sort_items_by_preferred_languages, \
+    sort_links_by_preferred_type, PublicationsHtmlExporter, PublicationsMarkdownExporter
+from freidok.models.api import Publications
+from freidok.utils import str2list, opens
 
 USER_AGENT = 'freidok-retrieve/1.0'
 
@@ -30,6 +34,14 @@ PUBLICATION_FIELDS = [
 
 # Sets of fields can be predefined via environment variables starting with
 publication_fieldsets = {}
+
+
+# ExportFormats = Enum('ExportFormats', ['MARKDOWN', 'JSON', 'HTML', 'TEMPLATE'])
+class ExportFormat(str, Enum):
+    MARKDOWN = 'markdown'
+    HTML = 'html'
+    JSON = 'json'
+    TEMPLATE = 'template'
 
 
 def env2dict(env_prefix: str, key_mapper: Callable = str,
@@ -102,16 +114,16 @@ def arguments():
     argp_api = argparse.ArgumentParser(add_help=False)
 
     argp_api.add_argument(
-        '--url', default=env_url, required=not env_url,
-        help='Freidok JSON API URL')
+        '--source', default=env_url, required=not env_url,
+        help='Freidok JSON API URL or path to stored JSON file')
 
     argp_api.add_argument(
         '-n', '--dryrun', action='store_true',
         help="Don't actually send API requests, just print query")
 
     argp_api.add_argument(
-        '--maxrows', metavar='N', default=0, type=max_rows_type,
-        help='Maximum number of rows to retrieve')
+        '--maxitems', metavar='N', default=0, type=max_rows_type,
+        help='Maximum number of items to retrieve')
 
     # argp_api.add_argument('--startrow', default=0, type=int,
     #                       help='Row index to start retrieval from (for pagination)')
@@ -124,19 +136,19 @@ def arguments():
 
     argp_pub.add_argument(
         '--id', type=str2list, metavar='ID[,ID,..]',
-        help='One or many publication IDs')
+        help='Retrieve publications by their ID')
 
     argp_pub.add_argument(
         '--pers-id', type=intlist, metavar='ID[,ID,..]',
-        help='One or many person IDs')
+        help='Retrieve publications associated with these person IDs')
 
     argp_pub.add_argument(
         '--inst-id', type=intlist, metavar='ID[,ID,..]',
-        help='One or many institution IDs')
+        help='Retrieve publications associated with these institution IDs')
 
     argp_pub.add_argument(
         '--title', metavar='TERM',
-        help='Search TERM in publication title')
+        help='Retrieve publications with a title that contain TERM')
 
     argp_pub.add_argument(
         '--years', metavar='YYYY[-YYYY]', type=year_range_type,
@@ -144,7 +156,11 @@ def arguments():
 
     argp_pub.add_argument(
         '--maxpers', metavar='N', default=0, type=int,
-        help='Maximum number of listed authors')
+        help='Limit the number of listed authors')
+
+    argp_pub.add_argument(
+        '--abbrev-names', action='store_true',
+        help='Abbreviate first author names')
 
     group_fields = argp_pub.add_mutually_exclusive_group()
 
@@ -155,8 +171,20 @@ def arguments():
 
     group_fields.add_argument(
         '--fieldset', metavar='NAME', type=pub_fieldset_type,
-        help='Predefined set of fields to include in response. '
+        help='Predefined set of fields. '
              'Available sets: ' + str(list(publication_fieldsets.keys())))
+
+    argp_pub.add_argument(
+        '--format', choices=['markdown', 'html', 'json'],
+        help='Output file format. Ignored if --template is provided.')
+
+    argp_pub.add_argument(
+        '--template', metavar='FILE', type=Path,
+        help='Jinja2 template to use for output rendering')
+
+    argp_pub.add_argument(
+        '--out', type=Path,
+        help='Output file, otherwise stdout')
 
     argp_pub.set_defaults(func=get_publications)
 
@@ -185,10 +213,44 @@ def run():
     args.func(args)
 
 
+def output_file_and_format(args):
+    out_file = args.out or '-'
+
+    # template argument overrides any format arg
+    if args.template:
+        return [out_file, ExportFormat.TEMPLATE]
+
+    if args.format:
+        out_format = args.format
+    elif args.out:
+        match args.out.suffix.lower():
+            case ('.htm' | '.html'):
+                out_format = ExportFormat.HTML
+            case '.md':
+                out_format = ExportFormat.MARKDOWN
+            case _:
+                out_format = ExportFormat.JSON
+    else:
+        out_format = ExportFormat.MARKDOWN
+
+    return [out_file, out_format]
+
+
+def create_freidok_client(args):
+    if args.source.startswith('http'):
+        reader = FreidokApiClient(
+            base_url=args.source,
+            user_agent=USER_AGENT,
+            dryrun=args.dryrun,
+            default_max_rows=args.maxrows)
+    else:
+        reader = FreidokFileReader(file=args.source)
+
+    return reader
+
+
 def get_publications(args):
-    client = FreidokMockClient(base_url=args.url, user_agent=USER_AGENT,
-                               dryrun=args.dryrun,
-                               default_max_rows=args.maxrows)
+    client = create_freidok_client(args)
 
     if args.years:
         year_from = args.years[0]
@@ -217,15 +279,33 @@ def get_publications(args):
 
     publist = Publications(**data)
 
-    exporter = PublicationsHtmlExporter(
-        author_list_style=AuthorsListStyle.LAST_FIRST_ABBREV
-    )
-    exporter.export(publist, 'publications.html')
+    # modify publication list
+
+    # sort titles by preferred language
+    preferred_langs = ['eng', 'deu']
+    sort_items_by_preferred_languages(publist, preferred_langs)
+    # sort publication links by type
+    sort_links_by_preferred_type(publist, preferred_types=['doi'])
+
+    outfile, outfmt = output_file_and_format(args)
+    match outfmt:
+        case 'html':
+            PublicationsHtmlExporter.export(
+                publist, outfile, template_file=args.template)
+        case 'markdown':
+            PublicationsMarkdownExporter.export(
+                publist, outfile, template_file=args.template)
+        case 'json':
+            with opens(outfile, encoding='utf-8') as f:
+                json.dump(data, f)
+        case _:
+            raise NotImplementedError(f'Unsupported format: {outfmt}')
 
 
 def get_institutions(args):
-    client = FreidokClient(base_url=args.url, user_agent=USER_AGENT, dryrun=args.dryrun,
-                           default_max_rows=args.maxrows)
+    client = FreidokApiClient(base_url=args.url, user_agent=USER_AGENT,
+                              dryrun=args.dryrun,
+                              default_max_rows=args.maxrows)
 
     data = client.get_institutions(
         ids=args.id,
