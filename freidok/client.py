@@ -10,6 +10,7 @@ from freidok.utils import list2str
 
 
 def create_headers(user_agent, user_email=None, extra_headers=None):
+    """Build HTTP header dictionary"""
     headers = {
         'User-Agent': user_agent
     }
@@ -28,6 +29,7 @@ def add_param(d: dict[str, Any], name: str, value: Any, overwrite=True) -> None:
     Conditionally add single parameter to parameter dict.
 
     None values are ignored, existing keys are ignored by default.
+
     :param d: Parameter dictionary
     :param name: Parameter name
     :param value: Parameter value
@@ -150,20 +152,13 @@ class FreidokApiClient(FreiDokReader):
         return r.json()
 
 
-class DummyRequest:
-    def __init__(self, data):
-        self.data = data
-
-    def json(self):
-        return self.data
-
-
 class FreidokFileReader(FreiDokReader):
     """
     Read FreiDok data from file.
 
-    Currently, NO FILTERING will be applied and all data returned from file.
+    Currently, NO FILTERING is applied, i.e. all data from file will be returned.
     """
+
     def __init__(self, file: str):
         self.endpoint = file
 

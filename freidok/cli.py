@@ -89,9 +89,9 @@ def arguments():
         else:
             raise argparse.ArgumentTypeError(f"{y} is not a valid year range")
 
-    def multi_choice_type(value, allowed_values: list | set):
+    def multi_choice_type(value, allowed: list | set):
         items = str2list(value)
-        if bad_apples := set(items) - set(allowed_values):
+        if bad_apples := set(items) - set(allowed):
             raise argparse.ArgumentTypeError(f"Value(s) not allowed: {bad_apples}")
         else:
             return items
@@ -114,8 +114,8 @@ def arguments():
 
     env_url = os.getenv('FREIDOK_URL')
     max_rows_type = partial(int_minmax_type, xmin=1, xmax=100)
-    pub_fields_type = partial(multi_choice_type, allowed_values=PUBLICATION_FIELDS)
-    pub_fieldset_type = partial(choice_type, allowed_values=publication_fieldsets)
+    pub_fields_type = partial(multi_choice_type, allowed=PUBLICATION_FIELDS)
+    pub_fieldset_type = partial(simple_choice_type, allowed=publication_fieldsets)
 
     argp_main = argparse.ArgumentParser(prog='freidok', )
 
@@ -150,7 +150,7 @@ def arguments():
         help='Retrieve publications')
 
     argp_pub.add_argument(
-        '--id', type=str2list, metavar='ID[,ID,..]',
+        '--id', type=intlist, metavar='ID[,ID,..]',
         help='Retrieve publications by their ID')
 
     argp_pub.add_argument(
@@ -174,7 +174,7 @@ def arguments():
         help='Limit the number of listed authors')
 
     argp_pub.add_argument(
-        '--abbrev-names', action='store_true',
+        '--short-names', action='store_true',
         help='Abbreviate first author names')
 
     group_fields = argp_pub.add_mutually_exclusive_group()
