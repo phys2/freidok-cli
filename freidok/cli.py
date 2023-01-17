@@ -33,8 +33,12 @@ PUBLICATION_FIELDS = [
     'current_activity_affiliations',
 ]
 
-# Sets of fields can be predefined via environment variables starting with
-publication_fieldsets = {}
+# Sets of fields can be predefined via environment variables
+# starting with FREIDOK_FIELDSET_PUBLICATION_
+publication_fieldsets = {
+    'default': 'id link publication_year titles publisher persons persons_stat pubtype '
+               'source_journal source_compilation pub_ids preview_image'.split()
+}
 
 
 # ExportFormats = Enum('ExportFormats', ['MARKDOWN', 'JSON', 'HTML', 'TEMPLATE'])
