@@ -117,9 +117,6 @@ def arguments():
             return items
 
     env_url = os.getenv('FREIDOK_URL')
-    max_rows_type = partial(int_minmax_type, xmin=1, xmax=100)
-    pub_fields_type = partial(multi_choice_type, allowed=PUBLICATION_FIELDS)
-    pub_fieldset_type = partial(simple_choice_type, allowed=publication_fieldsets)
 
     argp_main = argparse.ArgumentParser(prog='freidok', )
 
@@ -201,12 +198,14 @@ def arguments():
     group_fields = argp_pub.add_mutually_exclusive_group()
 
     group_fields.add_argument(
-        '--fields', metavar='F[,F,...]', type=pub_fields_type,
+        '--fields', metavar='F[,F,...]',
+        type=partial(multi_choice_type, allowed=PUBLICATION_FIELDS),
         help='Field(s) to include in response. '
              'Available fields: ' + ', '.join(PUBLICATION_FIELDS))
 
     group_fields.add_argument(
-        '--fieldset', metavar='NAME', type=pub_fieldset_type,
+        '--fieldset', metavar='NAME',
+        type=partial(simple_choice_type, allowed=publication_fieldsets),
         help='Predefined set of fields. '
              'Available sets: ' + str(list(publication_fieldsets.keys())))
 
