@@ -12,8 +12,9 @@ def list2str(items: list | None, sep: str = ',') -> str | None:
         return sep.join([str(item) for item in items])
 
 
-def str2list(arg: str, mapper: Callable = str):
-    return [mapper(item.strip()) for item in arg.split(',')]
+def str2list(arg: str, mapper: Callable[[str], T] = str, sep: str = ',') -> list[T]:
+    items = arg.strip().strip(sep).split(sep)
+    return [mapper(item.strip()) for item in items]
 
 
 def first(it: Iterable[T], predicate: Callable[[T], bool],
