@@ -34,7 +34,8 @@ def sort_links_by_type(publist: Publications, preferred: list[str]):
     """Sort specific publication links by type"""
     for pub in publist.docs:
         # move preferred link types to beginning
-        pub.pub_ids.sort(key=lambda p: preference_index(p.type, preferred))
+        if pub.pub_ids:
+            pub.pub_ids.sort(key=lambda p: preference_index(p.type, preferred))
 
 
 def shorten_firstnames(publist: Publications, sep=''):
