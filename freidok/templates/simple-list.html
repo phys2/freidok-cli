@@ -4,62 +4,89 @@
 	<meta charset="utf-8">
 	<title>Publications</title>
 	<style>
-		.pub > * {
-				display: block;
-		}
-		.pub-thumbnail {
-				float: right;
-		}
+			body {
+				line-height: 130%;
+			}
+
+      .pub > *, .pub-wrapper > * {
+          display: block;
+      }
+
+      .pub-wrapper {
+          display: flow-root;
+      }
+
+			/*
+      .pub-thumbnail {
+          float: right;
+      }
+			*/
+
+			ul.publication-list {
+          list-style: none;
+          padding-left: 0;
+			}
+
+			ul.publication-list li {
+					margin-bottom: 1em;
+			}
+
+			li.pub-year {
+					font-weight: bold;
+					font-size: 1.3rem;
+			}
 	</style>
 </head>
 
 <body>
 <h1>Publications</h1>
 <ul class="publication-list">
-	{% for pub in publications %}
-		<li class="pub {{ loop.cycle('odd', 'even') }}">
-			{# image #}
-			{% if pub.preview_image.thumbnail90 %}
-				<img class="pub-thumbnail" src="{{ pub.preview_image.thumbnail90 }}" alt="Publication thumbnail"/>
-			{% endif %}
+	{% for year, items in publications|groupby('publication_year.value')|reverse %}
+		<li class="pub-year">{{ year }}</li>
+		<ul>
+			{% for pub in items %}
+			<li class="pub {{ loop.cycle('odd', 'even') }}">
+				<div class="pub-wrapper">
+					{# image #}
+{#					{% if pub.preview_image.thumbnail90 %}#}
+{#						<img class="pub-thumbnail" src="{{ pub.preview_image.thumbnail90 }}" alt="Publication thumbnail"/>#}
+{#					{% endif %}#}
 
-			{# authors #}
-			<span class="pub-authors">
-				{% set comma = joiner(",") %}
-				{%- for author in pub.persons -%}
-					{{ comma() }} {{ author.forename }} {{ author.surname }}
-				{%-  endfor -%}
-			</span>
-			{# title #}
-			<span class="pub-title">
-				{{ pub.titles[0].value }}
-			</span>
-			{# journal information #}
-			{% set source = pub.source_journal[0] %}
-			<span class="pub-source">
-				<span class="pub-source-title">{{ source.title }}</span>
-				{% if source.volume %}
-					<span class="pub-source-volume">{{ source.volume }}</span>
-				{% endif %}
-				{% if source.year %}
-					<span class="pub-source-year">({{ source.year }})</span>
-				{% endif %}
-				{% if source.issue %}
-					<span class="pub-source-issue">{{ source.issue }},</span>
-				{% endif %}
-				{% if source.page %}
-					<span class="pub-source-page">{{ source.page }}</span>
-				{% endif %}
-			</span>
-			{# link #}
-			{% if pub.pub_ids %}
-				<span class="pub-link">
-					<a href="{{ pub.pub_ids[0].link }}" title="Go to publication">{{ pub.pub_ids[0].link }}</a>
-				</span>
-			{% endif %}
+					{# authors #}
+					<span class="pub-authors">{{ pub._extras_authors }}</span>
+					{# title #}
+					<span class="pub-title">{{ pub.titles[0].value }}</span>
 
+					{# journal information #}
+					{% if pub.source_journal %}
+						{% set source = pub.source_journal[0] %}
+						<span class="pub-source">
+							<span class="pub-source-title">{{ source.title }}</span>
+							{% if source.volume %}
+								<span class="pub-source-volume">{{ source.volume }}</span>
+							{% endif %}
+							{% if source.year %}
+								<span class="pub-source-year">({{ source.year }})</span>
+							{% endif %}
+							{% if source.issue %}
+								<span class="pub-source-issue">{{ source.issue }},</span>
+							{% endif %}
+							{% if source.page %}
+								<span class="pub-source-page">{{ source.page }}</span>
+							{% endif %}
+						</span>
+					{% endif %}
 
-		</li>
+					{# link #}
+					{% if pub.pub_ids %}
+						<span class="pub-link">
+						<a href="{{ pub.pub_ids[0].link }}" title="Go to publication">{{ pub.pub_ids[0].link }}</a>
+					</span>
+					{% endif %}
+				</div>
+			</li>
+			{% endfor %}
+		</ul>
 
 	{% endfor %}
 </ul>
