@@ -1,11 +1,12 @@
 import contextlib
 import sys
-from typing import Iterable, Callable, TypeVar
+from typing import Callable, TypeVar
 
 T = TypeVar('T')
 
 
 def list2str(items: list | None, sep: str = ',') -> str | None:
+    """Convert a list to a string"""
     if items is None:
         return None
     else:
@@ -13,33 +14,14 @@ def list2str(items: list | None, sep: str = ',') -> str | None:
 
 
 def str2list(arg: str, mapper: Callable[[str], T] = str, sep: str = ',') -> list[T]:
+    """Convert a string to a list with optional modifier"""
     items = arg.strip().strip(sep).split(sep)
     return [mapper(item.strip()) for item in items]
 
 
-def first(it: Iterable[T], predicate: Callable[[T], bool],
-          default: T | None = None) -> T | None:
-    """Return first element from iterable that fulfills the predicate"""
-    return next((x for x in it if predicate(x)), default)
-
-
-def firstindex(it: Iterable[T], predicate: Callable[[T], bool]) -> int:
-    for i, item in it:
-        if predicate(item):
-            return i
-    return -1
-
-
-def movetofront(listobj: list[T], predicate: Callable[[T], bool]):
-    i = first(listobj, predicate)
-    if i > 0:
-        item = listobj.pop(i)
-        listobj.insert(0, item)
-
-
 @contextlib.contextmanager
 def opens(file=None, mode='w', stream=sys.stdout, **kwargs):
-    """Open file for writing or fall back to stream"""
+    """Open file for writing, otherwise use stream"""
     if file and file != '-':
         fh = open(file, mode, **kwargs)
     else:

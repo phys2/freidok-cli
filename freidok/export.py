@@ -1,59 +1,29 @@
-import warnings
+import abc
 from pathlib import Path
 
 import jinja2
 
-from freidok.models.api import Doc, Publications, Person
-from freidok.utils import first, opens
+from freidok.models.api import Publications
+from freidok.utils import opens
 
 
-class PublicationsExporter:
-    def __init__(
-            self,
-            pref_langs: list[str] | None = None,
-            abbreviate_author_names=False):
-        self.prefered_languages = pref_langs or ['eng', 'deu']
-        self.abbreviate_author_names = abbreviate_author_names
-
-    def get_best_title(self, pub: Doc) -> str:
-        for lang in self.prefered_languages:
-            if t := first(pub.titles, lambda _: _.language == lang):
-                return t.value
-
-        # no preferred language found, fall back to first title
-        return pub.titles[0].value
-
-    def get_author_name(self, author: Person):
-        def _abbreviate(name):
-            if not name:
-                return ''
-            else:
-                return "".join(c[0].upper() for c in name.split())
-
-    def get_author_names(self, pub: Doc):
-        return [self.get_author_name(a) for a in pub.persons]
-
-    def get_source(self, pub: Doc):
-        # take first
-        journal = pub.source_journal[0]
-        if not journal:
-            warnings.warn('No journal data available for publication', pub.id)
-            return []
-        if len(pub.source_journal) > 1:
-            warnings.warn('More than one source journal available for', pub.id)
-
-        return journal
+class PublicationsExporter(metaclass=abc.ABCMeta):
+    """
+    Publications exporter base class.
+    """
+    pass
 
 
 class PublicationsTemplateExporter(PublicationsExporter):
-    """Export publications via Jinja2 templates"""
+    """
+    Export publications via Jinja2 templates.
+    """
 
     def __init__(self, default_template=None, jinja_args=None, **kwargs):
-        super().__init__(**kwargs)
         self.default_template = default_template
-        if not jinja_args:
-            jinja_args = {}
-        self.environment_args = dict(lstrip_blocks=True, trim_blocks=True, **jinja_args)
+        self.environment_args = dict(lstrip_blocks=True, trim_blocks=True)
+        if jinja_args:
+            self.environment_args.update(jinja_args)
 
     def _load_template(self, template_file: Path | None):
         """Load Jinja2 template from file"""

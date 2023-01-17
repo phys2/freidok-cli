@@ -24,8 +24,10 @@ def preference_index(value, preferred_values: list):
 def sort_items_by_language(publist: Publications, preferred: list[str]):
     """Sort specific publication data by preferred language"""
     for pub in publist.docs:
-        # there may existmultiple titles in differed languages
-        pub.titles.sort(key=lambda t: preference_index(t.language, preferred))
+        attributes = ['titles', 'abstracts']
+        for attr in attributes:
+            if items := getattr(pub, attr, None):
+                items.sort(key=lambda t: preference_index(t.language, preferred))
 
 
 def sort_links_by_type(publist: Publications, preferred: list[str]):
