@@ -157,8 +157,10 @@ class FreidokApiClient(FreiDokReader):
 
         add_param(params, 'field', list2str(fields))
         add_param(params, 'maxPers', maxpers)
-        add_param(params, 'maxRows', maxitems)
-        add_param(params, 'start', startitem)
+        if maxitems:
+            add_param(params, 'maxRows', maxitems)
+        if startitem:
+            add_param(params, 'start', startitem)
 
         # add date params
         if year_from and year_from > 0:
