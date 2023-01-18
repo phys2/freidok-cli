@@ -7,14 +7,14 @@ from freidok.models.api import Publications
 from freidok.utils import opens
 
 
-class PublicationsExporter(metaclass=abc.ABCMeta):
+class Exporter(metaclass=abc.ABCMeta):
     """
     Publications exporter base class.
     """
     pass
 
 
-class PublicationsTemplateExporter(PublicationsExporter):
+class TemplateExporter(Exporter):
     """
     Export publications via Jinja2 templates.
     """
@@ -58,7 +58,9 @@ class PublicationsTemplateExporter(PublicationsExporter):
             fout.write(template.render(context))
 
 
-PublicationsHtmlExporter = PublicationsTemplateExporter(
-    default_template='simple-list.html', jinja_args=dict(autoescape=True))
-PublicationsMarkdownExporter = PublicationsTemplateExporter(
-    default_template='simple-list.md')
+PublicationsHtmlExporter = TemplateExporter(
+    default_template='publications/simple-list.html',
+    jinja_args=dict(autoescape=True))
+
+PublicationsMarkdownExporter = TemplateExporter(
+    default_template='publications/simple-list.md')

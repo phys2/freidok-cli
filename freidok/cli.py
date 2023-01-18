@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 from freidok import modify
 from freidok.client import FreidokApiClient, FreidokFileReader
 from freidok.export import PublicationsHtmlExporter, \
-    PublicationsMarkdownExporter, PublicationsTemplateExporter
+    PublicationsMarkdownExporter, TemplateExporter
 from freidok.models.api import Publications
 from freidok.utils import str2list, opens
 
@@ -350,8 +350,7 @@ def get_publications(args):
             PublicationsMarkdownExporter.export(
                 publist, outfile, template_file=args.template)
         case ExportFormat.TEMPLATE:
-            exporter = PublicationsTemplateExporter()
-            exporter.export(
+            TemplateExporter().export(
                 publist, outfile, template_file=args.template)
         case ExportFormat.JSON:
             with opens(outfile, encoding='utf-8') as f:
