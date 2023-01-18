@@ -49,7 +49,7 @@ class ExportFormat(str, Enum):
     TEMPLATE = 'template'
 
 
-def env2dict(env_prefix: str, key_mapper: Callable = str,
+def env2dict(env_prefix: str, key_mapper: Callable[[str], str] = str,
              value_mapper: Callable = None):
     """Return certain values from env"""
     d = {}
@@ -251,37 +251,34 @@ def run():
 
 
 def get_output_format(args):
-    # template argument overrides any format arg
+    # template argument overrides any other format argument
     if args.template:
         return ExportFormat.TEMPLATE
 
     if args.format:
-        fmt = args.format
-    elif args.out:
+        return args.format
+
+    if args.out:
         match args.out.suffix.lower():
             case ('.htm' | '.html'):
-                fmt = ExportFormat.HTML
+                return ExportFormat.HTML
             case '.md':
-                fmt = ExportFormat.MARKDOWN
+                return ExportFormat.MARKDOWN
             case _:
-                fmt = ExportFormat.JSON
-    else:
-        fmt = ExportFormat.MARKDOWN
+                return ExportFormat.JSON
 
-    return fmt
+    return ExportFormat.MARKDOWN
 
 
 def create_freidok_client(args):
     if args.source.startswith('http'):
-        reader = FreidokApiClient(
+        return FreidokApiClient(
             base_url=args.source,
             user_agent=USER_AGENT,
             dryrun=args.dryrun,
             default_max_items=args.maxitems)
     else:
-        reader = FreidokFileReader(file=args.source)
-
-    return reader
+        return FreidokFileReader(file=args.source)
 
 
 def get_publications(args):
@@ -340,6 +337,20 @@ def get_publications(args):
     # sort publication links by type
     modify.sort_links_by_type(publist, preferred=['doi'])
 
+    export(publist, data, args)
+
+
+def get_institutions(args):
+    client = create_freidok_client(args)
+
+    data = client.get_institutions(
+        ids=args.id,
+        name=args.name,
+    )
+    print(data)
+
+
+def export(publist, data, args):
     outfile = args.out or '-'
     outfmt = get_output_format(args)
     match outfmt:
@@ -357,15 +368,3 @@ def get_publications(args):
                 json.dump(data, f)
         case _:
             raise NotImplementedError(f'Unsupported format: {outfmt}')
-
-
-def get_institutions(args):
-    client = FreidokApiClient(base_url=args.url, user_agent=USER_AGENT,
-                              dryrun=args.dryrun,
-                              default_max_rows=args.maxrows)
-
-    data = client.get_institutions(
-        ids=args.id,
-        name=args.name,
-    )
-    print(data)
