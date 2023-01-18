@@ -313,7 +313,7 @@ def get_publications(args):
         ids=args.id,
         inst_ids=args.inst_id,
         pers_ids=args.pers_id,
-        proj_ids=args.proj_ids,
+        proj_ids=args.proj_id,
         title=args.title,
         year_from=year_from,
         year_to=year_to,
@@ -326,12 +326,12 @@ def get_publications(args):
 
     publist = Publications(**data)
 
-    if args.author_abbrev:
-        modify.shorten_author_firstnames(publist, sep=args.author_abbrev)
+    if args.authors_abbrev:
+        modify.shorten_author_firstnames(publist, sep=args.authors_abbrev)
     # add pre-formatted authors list to each publication object (_extras_authors)
     modify.add_author_list_string(
-        publist, abbrev=args.author_abbrev, reverse=args.author_reverse,
-        sep=args.author_sep)
+        publist, abbrev=args.authors_abbrev, reverse=args.authors_reverse,
+        sep=args.authors_sep)
     # sort titles, abstracts, etc. by preferred language
     modify.sort_items_by_language(publist, preferred=args.langs)
     # sort publication links by type
