@@ -161,8 +161,8 @@ class FreidokApiClient(FreiDokReader):
         add_param(params, 'start', startitem)
 
         # add date params
-        if year_from > 0:
-            if year_to > 0:
+        if year_from and year_from > 0:
+            if year_to and year_to > 0:
                 if year_to < year_from:
                     raise ValueError(f"Invalid date range {year_from}-{year_to}")
             else:
