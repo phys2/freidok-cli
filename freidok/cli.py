@@ -113,134 +113,156 @@ def arguments():
         for item in items:
             if not (m := re.match(r'^[a-zA-Z]{3}$', item)):
                 raise argparse.ArgumentTypeError(
-                    f"Invalid 3-character language code: '{item}'")
+                    f"Invalid 3-letter language code: '{item}'")
         else:
             return items
 
-    env_url = os.getenv('FREIDOK_URL')
+    # root parser
+    argp_main = argparse.ArgumentParser(prog='freidok', add_help=False)
+    group = argp_main.add_argument_group('options')
+    group.add_argument(
+        '-h', '--help', action='help',
+        help="Show this help text")
 
-    argp_main = argparse.ArgumentParser(prog='freidok', )
-
-    subparsers = argp_main.add_subparsers(
-        title='subcommands', description='available subcommands:', help='Description')
-
+    # parent parser for all api subparsers
     argp_api = argparse.ArgumentParser(add_help=False)
 
+    # common subparser options
     argp_api.add_argument(
-        '--source', default=env_url, required=not env_url,
-        help='Freidok JSON API URL or path to stored JSON file')
-
-    argp_api.add_argument(
-        '-n', '--dryrun', action='store_true',
-        help="Don't actually send API requests, just print query")
-
-    argp_api.add_argument(
-        '--maxitems', metavar='N', default=100,
-        type=partial(int_minmax_type, xmin=1, xmax=100),
-        help='Maximum number of items to retrieve')
-
-    argp_api.add_argument(
-        '--startitem', metavar='N', default=0, type=int,
-        help='Start retrieval at this offset (useful for pagination)')
-
-    # argp_api.add_argument('--startrow', default=0, type=int,
-    #                       help='Row index to start retrieval from (for pagination)')
-
-    argp_api.add_argument(
-        '--langs', type=language_type, default='eng,deu',
-        help='Preferred languages (3-character code, decreasing preference)')
-
-    # subparser: publications
-
-    argp_pub = subparsers.add_parser(
-        'publications', parents=[argp_api], aliases=['pub'],
-        help='Retrieve publications')
-
-    argp_pub.add_argument(
-        '--id', type=intlist, metavar='ID[,ID,..]',
-        help='Retrieve publications by their ID')
-
-    argp_pub.add_argument(
-        '--pers-id', type=intlist, metavar='ID[,ID,..]',
-        help='Retrieve publications associated with these person IDs')
-
-    argp_pub.add_argument(
-        '--inst-id', type=intlist, metavar='ID[,ID,..]',
-        help='Retrieve publications associated with these institution IDs')
-
-    argp_pub.add_argument(
-        '--proj-id', type=intlist, metavar='ID[,ID,..]',
-        help='Retrieve publications associated with these project IDs')
-
-    argp_pub.add_argument(
-        '--title', metavar='TERM',
-        help='Retrieve publications with a title that contain TERM')
-
-    argp_pub.add_argument(
-        '--years', metavar='YYYY[-YYYY]', type=year_range_type,
-        help='Limit publication years')
-
-    argp_pub.add_argument(
-        '--maxpers', metavar='N', default=0, type=int,
-        help='Limit the number of listed authors')
-
-    argp_pub.add_argument(
-        '--author-abbrev', metavar='STR', nargs='?', const='',
-        help='Abbreviate first author names [with given character]')
-
-    argp_pub.add_argument(
-        '--author-reverse', action='store_true',
-        help='Reverse author names, having last name come first')
-
-    argp_pub.add_argument(
-        '--author-sep', metavar='STR',
-        help='Separate author names with STR')
-
-    group_fields = argp_pub.add_mutually_exclusive_group()
-
-    group_fields.add_argument(
-        '--fields', metavar='F[,F,...]',
-        type=partial(multi_choice_type, allowed=PUBLICATION_FIELDS),
-        help='Field(s) to include in response. '
-             'Available fields: ' + ', '.join(PUBLICATION_FIELDS))
-
-    group_fields.add_argument(
-        '--fieldset', metavar='NAME',
-        type=partial(simple_choice_type, allowed=publication_fieldsets),
-        help='Predefined set of fields. '
-             'Available sets: ' + str(list(publication_fieldsets.keys())))
-
-    argp_pub.add_argument(
         '--format', choices=['markdown', 'html', 'json'],
         help='Output file format. Ignored if --template is provided. '
              'For json, some post-retrieval operations (e.g. author name modifications)'
              'are not available yet.')
 
-    argp_pub.add_argument(
+    argp_api.add_argument(
         '--template', metavar='FILE', type=Path,
-        help='Jinja2 template to use for output rendering')
+        help='Custom Jinja2 template file path')
 
-    argp_pub.add_argument(
+    argp_api.add_argument(
         '--out', type=Path,
         help='Output file, otherwise stdout')
 
-    argp_pub.set_defaults(func=get_publications)
+    argp_api.add_argument(
+        '-h', '--help', action='help',
+        help="Show this help text")
 
+    # group for common API settings
+    argp_api_settings = argp_api.add_argument_group('general settings')
+
+    env_url = os.getenv('FREIDOK_URL')
+    argp_api_settings.add_argument(
+        '--source', default=env_url, required=not env_url,
+        help='URL of FreiDok JSON API or path to JSON file')
+
+    argp_api_settings.add_argument(
+        '--maxitems', metavar='N', default=100,
+        type=partial(int_minmax_type, xmin=1, xmax=100),
+        help='Maximum number of items to retrieve')
+
+    argp_api_settings.add_argument(
+        '--startitem', metavar='N', default=0, type=int,
+        help='Start index of retrieved items (useful for pagination)')
+
+    default_langs = 'eng,deu'
+    env_langs = os.getenv('FREIDOK_LANGUAGES', default_langs)
+    argp_api_settings.add_argument(
+        '--langs', type=language_type, default=env_langs,
+        help='Comma-separated list of preferred languages '
+             f"(3-letter codes, default={default_langs})")
+
+    argp_api_settings.add_argument(
+        '-n', '--dryrun', action='store_true',
+        help="Only print API request, don't send it")
+
+    subparsers = argp_main.add_subparsers(
+        title='actions',
+        description='',
+        help='')
+
+    #
+    # subparser: publications
+    #
+
+    sub_pub = subparsers.add_parser(
+        'publ', parents=[argp_api],
+        help='Retrieve publications', add_help=False)
+
+    sub_pub_filters = sub_pub.add_argument_group('filter options')
+    sub_pub_filters.add_argument(
+        '--id', type=intlist, metavar='ID[,ID,..]',
+        help='Retrieve publications by ID')
+
+    sub_pub_filters.add_argument(
+        '--pers-id', type=intlist, metavar='ID[,ID,..]',
+        help='Filter by person IDs')
+
+    sub_pub_filters.add_argument(
+        '--inst-id', type=intlist, metavar='ID[,ID,..]',
+        help='Filter by institution IDs')
+
+    sub_pub_filters.add_argument(
+        '--proj-id', type=intlist, metavar='ID[,ID,..]',
+        help='Filter by project IDs')
+
+    sub_pub_filters.add_argument(
+        '--title', metavar='TERM',
+        help='Filter by title ("contains")')
+
+    sub_pub_filters.add_argument(
+        '--years', metavar='YYYY[-YYYY]', type=year_range_type, default=0,
+        help='Filter by year of publication')
+
+    sub_pub_filters.add_argument(
+        '--maxpers', metavar='N', default=0, type=int,
+        help='Limit the number of listed authors')
+
+    group = sub_pub_filters.add_mutually_exclusive_group()
+
+    group.add_argument(
+        '--fields', metavar='F[,F,...]',
+        type=partial(multi_choice_type, allowed=PUBLICATION_FIELDS),
+        help='Field(s) to include in response. '
+             'Available fields: ' + ', '.join(PUBLICATION_FIELDS))
+
+    group.add_argument(
+        '--fieldset', metavar='NAME',
+        type=partial(simple_choice_type, allowed=publication_fieldsets),
+        help='Predefined set of fields. '
+             'Available sets: ' + str(list(publication_fieldsets.keys())))
+
+    sub_pub_filters.add_argument(
+        '--authors-abbrev', metavar='STR', nargs='?', const='',
+        help='Abbreviate authors first names [with optional character]')
+
+    sub_pub_filters.add_argument(
+        '--authors-reverse', action='store_true',
+        help='Reverse author names, having last name come first')
+
+    sub_pub_filters.add_argument(
+        '--authors-sep', metavar='STR',
+        help='Separate author names with STR')
+
+    sub_pub.set_defaults(func=get_publications)
+
+    #
     # subparser: institutions
+    #
 
-    argp_inst = subparsers.add_parser(
-        'institutions', parents=[argp_api], aliases=['inst'],
+    sub_inst = subparsers.add_parser(
+        'inst', parents=[argp_api], add_help=False,
         help='Retrieve institutions')
 
-    argp_inst.add_argument(
+    sub_inst_filters = sub_inst.add_argument_group('filter options')
+
+    sub_inst_filters.add_argument(
         '--id', type=str2list, metavar='ID1[,ID2,..]',
         help='One or many institution IDs')
 
-    argp_inst.add_argument(
+    sub_inst_filters.add_argument(
         '--name', type=str, metavar='TERM',
         help='Show institutions containing TERM')
 
-    argp_inst.set_defaults(func=get_institutions)
+    sub_inst.set_defaults(func=get_institutions)
 
     return argp_main.parse_args()
 
