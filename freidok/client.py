@@ -107,7 +107,8 @@ class FreidokApiClient(FreiDokReader):
         r = requests.get(url, headers=self.headers, params=params,
                          timeout=self.timeout)
         r.raise_for_status()
-        return r
+
+        return r.json()
 
     def get_publications(
             self,
@@ -175,8 +176,7 @@ class FreidokApiClient(FreiDokReader):
         if kwargs:
             params.update(kwargs)
 
-        r = self._get(url, params)
-        return r.json()
+        return self._get(url, params)
 
     def get_institutions(self, ids: list[int] = None, name: str = None, **kwargs):
         url = self.endpoint + '/institutions'
@@ -189,8 +189,8 @@ class FreidokApiClient(FreiDokReader):
                 'ids, name')
         if kwargs:
             params.update(kwargs)
-        r = self._get(url, params)
-        return r.json()
+
+        return self._get(url, params)
 
 
 class FreidokFileReader(FreiDokReader):
@@ -203,16 +203,14 @@ class FreidokFileReader(FreiDokReader):
     def __init__(self, file: str):
         self.endpoint = file
 
-    def _get(self):
+    def _get(self, url=None, params: dict[str, Any] = None, **kwargs):
+        if params or kwargs:
+            warnings.warn("Filtering is not yet supported for file sources")
         with open(self.endpoint) as f:
             return json.load(f)
 
     def get_institutions(self, *args, **kwargs):
-        if args or kwargs:
-            warnings.warn("Filtering is not yet supported for file sources")
-        return self._get()
+        return self._get(*args, **kwargs)
 
     def get_publications(self, *args, **kwargs):
-        if args or kwargs:
-            warnings.warn("Filtering is not yet supported for file sources")
-        return self._get()
+        return self._get(*args, **kwargs)
