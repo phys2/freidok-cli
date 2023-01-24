@@ -117,6 +117,18 @@ def arguments():
         else:
             return items
 
+    def api_params_type(value):
+        params = {}
+        item: str = ''
+        for item in value.split():
+            try:
+                key, val = item.split('=')
+                params[key] = val
+            except ValueError:
+                raise argparse.ArgumentTypeError(
+                    f"Invalid API parameter string: '{value}' ({item})")
+        return params
+
     # root parser
     argp_main = argparse.ArgumentParser(prog='freidok', add_help=False)
     group = argp_main.add_argument_group('options')
@@ -231,6 +243,10 @@ def arguments():
              'Available sets: ' + str(list(publication_fieldsets.keys())))
 
     sub_pub_filters.add_argument(
+        '--params', metavar='STR', dest='api_params', type=api_params_type,
+        help='Additional parameters passed to API, e.g. "transitive=true pubtype=book"')
+
+    sub_pub_filters.add_argument(
         '--authors-abbrev', metavar='STR', nargs='?', const='',
         help='Abbreviate authors first names [with optional character]')
 
@@ -330,6 +346,9 @@ def get_publications(args):
     if 'id' in fields:
         sortfields.append('id+desc')
     params = dict(sortfield=','.join(sortfields))
+
+    if args.api_params:
+        params.update(args.api_params)
 
     data = client.get_publications(
         ids=args.id,
