@@ -1,10 +1,18 @@
 [tool.poetry]
 name = "freidok"
 version = "0.1.0"
-description = ""
-authors = ["Alex <alexander.haupt@physiologie.uni-freiburg.de>"]
+description = "Retrieve publications from freidok and export via Jinja2 templates"
+authors = ["Alexander Haupt <alexander.haupt@physiologie.uni-freiburg.de>"]
 readme = "README.md"
 license = "MIT"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 
 [tool.poetry.dependencies]
 python = "3.10.*"
