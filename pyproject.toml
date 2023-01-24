@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "freidok"
-version = "0.1.0"
+version = "0.0.0"
 description = "Retrieve publications from freidok and export via Jinja2 templates"
 authors = ["Alexander Haupt <alexander.haupt@physiologie.uni-freiburg.de>"]
 readme = "README.md"
@@ -30,4 +30,13 @@ datamodel-code-generator = {extras = ["http"], version = "^0.15.0"}
 
 [build-system]
 requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+bump = "true"
+
+[tool.poetry-dynamic-versioning.substitution]
+files = ["*/version.py"]
+
