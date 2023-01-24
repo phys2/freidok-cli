@@ -142,9 +142,7 @@ def arguments():
     # common subparser options
     argp_api.add_argument(
         '--format', choices=['markdown', 'html', 'json'],
-        help='Output file format. Ignored if --template is provided. '
-             'For json, some post-retrieval operations (e.g. author name modifications)'
-             'are not available yet.')
+        help='Output file format (ignored if --template is provided)')
 
     argp_api.add_argument(
         '--template', metavar='FILE', type=Path,
@@ -178,7 +176,7 @@ def arguments():
     default_langs = 'eng,deu'
     env_langs = os.getenv('FREIDOK_LANGUAGES', default_langs)
     argp_api_settings.add_argument(
-        '--langs', type=language_type, default=env_langs,
+        '--langs', metavar='LANG[,LANG...]', type=language_type, default=env_langs,
         help='Comma-separated list of preferred languages '
              f"(3-letter codes, default={default_langs})")
 
@@ -201,19 +199,19 @@ def arguments():
 
     sub_pub_filters = sub_pub.add_argument_group('filter options')
     sub_pub_filters.add_argument(
-        '--id', type=intlist, metavar='ID[,ID,..]',
+        '--id', type=intlist, metavar='ID[,ID...]',
         help='Retrieve publications by ID')
 
     sub_pub_filters.add_argument(
-        '--pers-id', type=intlist, metavar='ID[,ID,..]',
+        '--pers-id', type=intlist, metavar='ID[,ID...]',
         help='Filter by person IDs')
 
     sub_pub_filters.add_argument(
-        '--inst-id', type=intlist, metavar='ID[,ID,..]',
+        '--inst-id', type=intlist, metavar='ID[,ID...]',
         help='Filter by institution IDs')
 
     sub_pub_filters.add_argument(
-        '--proj-id', type=intlist, metavar='ID[,ID,..]',
+        '--proj-id', type=intlist, metavar='ID[,ID...]',
         help='Filter by project IDs')
 
     sub_pub_filters.add_argument(
@@ -231,7 +229,7 @@ def arguments():
     group = sub_pub_filters.add_mutually_exclusive_group()
 
     group.add_argument(
-        '--fields', metavar='F[,F,...]',
+        '--fields', metavar='F[,F...]',
         type=partial(multi_choice_type, allowed=PUBLICATION_FIELDS),
         help='Field(s) to include in response. '
              'Available fields: ' + ', '.join(PUBLICATION_FIELDS))
@@ -244,19 +242,23 @@ def arguments():
 
     sub_pub_filters.add_argument(
         '--params', metavar='STR', dest='api_params', type=api_params_type,
-        help='Additional parameters passed to API, e.g. "transitive=true pubtype=book"')
+        help='Additional parameters passed to freidok API, '
+             'e.g. "transitive=true pubtype=book"')
 
     sub_pub_filters.add_argument(
         '--authors-abbrev', metavar='STR', nargs='?', const='',
-        help='Abbreviate authors first names [with optional character]')
+        help='Abbreviate authors first names [with optional character] '
+             '(ignored if --format=json)')
 
     sub_pub_filters.add_argument(
         '--authors-reverse', action='store_true',
-        help='Reverse author names, having last name come first')
+        help='List authors names as "last name, first name" '
+             '(ignored if --format=json)')
 
     sub_pub_filters.add_argument(
         '--authors-sep', metavar='STR',
-        help='Separate author names with STR')
+        help='Separate individual authors with STR '
+             '(ignored if --format=json)')
 
     sub_pub.set_defaults(func=get_publications)
 
@@ -271,7 +273,7 @@ def arguments():
     sub_inst_filters = sub_inst.add_argument_group('filter options')
 
     sub_inst_filters.add_argument(
-        '--id', type=str2list, metavar='ID1[,ID2,..]',
+        '--id', type=str2list, metavar='ID[,ID...]',
         help='One or many institution IDs')
 
     sub_inst_filters.add_argument(
