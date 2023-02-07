@@ -159,7 +159,7 @@ def arguments():
     # group for common API settings
     argp_api_settings = argp_api.add_argument_group('general settings')
 
-    env_url = os.getenv('FREIDOK_URL')
+    env_url = os.getenv('FREIDOK_URL', 'https://freidok.uni-freiburg.de/jsonApi/v1/')
     argp_api_settings.add_argument(
         '--source', default=env_url, required=not env_url,
         help='URL of FreiDok JSON API or path to JSON file')
@@ -340,6 +340,9 @@ def get_publications(args):
     else:
         fields = publication_fieldsets['default']
 
+    # additional API parameters
+    params = {}
+
     # sort params
     # todo: make sort parameters available on command line
     sortfields = []
@@ -347,7 +350,8 @@ def get_publications(args):
         sortfields.append('publication_year+desc')
     if 'id' in fields:
         sortfields.append('id+desc')
-    params = dict(sortfield=','.join(sortfields))
+    if sortfields:
+        params['sortfield'] = ','.join(sortfields)
 
     if args.api_params:
         params.update(args.api_params)
