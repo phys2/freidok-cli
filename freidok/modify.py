@@ -82,7 +82,7 @@ def shorten_author_firstnames(publist: Publications, sep=''):
 
 
 def _abbreviate(name, sep=''):
-    """Abbreviate names, e.g. Roland Werder Friedrich -> RWF"""
+    """Abbreviate names, e.g. Roland Werner Friedrich -> RWF"""
     if not name:
         return ''
     else:

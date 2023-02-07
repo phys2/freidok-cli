@@ -205,7 +205,8 @@ class FreidokFileReader(FreiDokReader):
 
     def _get(self, url=None, params: dict[str, Any] = None, **kwargs):
         if params or kwargs:
-            warnings.warn("Filtering is not yet supported for file sources")
+            warnings.warn(
+                "Some API filters/parameters cannot be applied to local files")
         with open(self.endpoint) as f:
             return json.load(f)
 
