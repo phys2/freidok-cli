@@ -89,8 +89,8 @@ def arguments():
         return x
 
     def year_range_type(y):
-        if m := re.match(r'^\d{4}(?:-\d{4})?$', y):
-            return list(map(int, y.split('-')))
+        if m := re.match(r'^(\d{4})(?:-(\d{4}))?$', y):
+            return [int(m.group(1)), int(m.group(2))]
         else:
             raise argparse.ArgumentTypeError(f"{y} is not a valid year range")
 
