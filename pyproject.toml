@@ -11,6 +11,10 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry_dynamic_versioning.backend"
+
 [tool.poetry.dependencies]
 python = "3.10.*"
 requests = "^2.28.1"
@@ -24,10 +28,7 @@ freidok = 'freidok.cli:run'
 
 [tool.poetry.group.dev.dependencies]
 datamodel-code-generator = {extras = ["http"], version = "^0.17.0"}
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry_dynamic_versioning.backend"
+black = "^23.1.0"
 
 [tool.poetry-dynamic-versioning]
 enable = true
@@ -37,3 +38,8 @@ bump = "true"
 [tool.poetry-dynamic-versioning.substitution]
 files = ["*/version.py"]
 
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.py$'
+extend-exclude = '/models/'
