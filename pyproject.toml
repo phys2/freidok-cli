@@ -23,7 +23,7 @@ jinja2 = "^3.1.2"
 freidok = 'freidok.cli:run'
 
 [tool.poetry.group.dev.dependencies]
-datamodel-code-generator = {extras = ["http"], version = "^0.15.0"}
+datamodel-code-generator = {extras = ["http"], version = "^0.17.0"}
 
 [build-system]
 requires = ["poetry-core"]
