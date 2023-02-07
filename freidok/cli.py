@@ -13,48 +13,99 @@ from dotenv import load_dotenv
 
 from freidok import modify
 from freidok.client import FreidokApiClient, FreidokFileReader
-from freidok.export import PublicationsHtmlExporter, \
-    PublicationsMarkdownExporter, TemplateExporter, InstitutionsMarkdownExporter, \
-    InstitutionsHtmlExporter
+from freidok.export import (
+    PublicationsHtmlExporter,
+    PublicationsMarkdownExporter,
+    TemplateExporter,
+    InstitutionsMarkdownExporter,
+    InstitutionsHtmlExporter,
+)
 from freidok.models.institutions import Institutions
 from freidok.models.publications import Publications
 from freidok.utils import str2list, opens
 
-USER_AGENT = 'freidok-retrieve/1.0'
+USER_AGENT = "freidok-retrieve/1.0"
 
 PUBLICATION_FIELDS = [
-    'id', 'link', 'abstracts', 'researchdata_descriptions', 'descriptions', 'messages',
-    'classifications', 'pub_ids', 'pub_ids_internal', 'pubtype', 'languages', 'edition',
-    'keywords', 'keywords_uncontrolled', 'publication_year', 'peerreviewed',
-    'day_of_exam', 'system_time', 'titles', 'title_parents', 'persons', 'persons_stat',
-    'affiliations_list', 'functions_list', 'institutions', 'relations',
-    'reverse_relations', 'publisher', 'source_journal', 'source_compilation', 'size',
-    'series', 'contract', 'license_metadata', 'license', 'contact', 'fundings',
-    'preview_image', 'files_stat', 'files', 'files_external', 'oa_status', 'revision',
-    'acquisition_type', 'fachsigel', 'state', 'locked', 'issued', 'created_by',
-    'submission_type', 'current_person_affiliations',
-    'current_institution_affiliations', 'current_project_affiliations',
-    'current_activity_affiliations',
+    "id",
+    "link",
+    "abstracts",
+    "researchdata_descriptions",
+    "descriptions",
+    "messages",
+    "classifications",
+    "pub_ids",
+    "pub_ids_internal",
+    "pubtype",
+    "languages",
+    "edition",
+    "keywords",
+    "keywords_uncontrolled",
+    "publication_year",
+    "peerreviewed",
+    "day_of_exam",
+    "system_time",
+    "titles",
+    "title_parents",
+    "persons",
+    "persons_stat",
+    "affiliations_list",
+    "functions_list",
+    "institutions",
+    "relations",
+    "reverse_relations",
+    "publisher",
+    "source_journal",
+    "source_compilation",
+    "size",
+    "series",
+    "contract",
+    "license_metadata",
+    "license",
+    "contact",
+    "fundings",
+    "preview_image",
+    "files_stat",
+    "files",
+    "files_external",
+    "oa_status",
+    "revision",
+    "acquisition_type",
+    "fachsigel",
+    "state",
+    "locked",
+    "issued",
+    "created_by",
+    "submission_type",
+    "current_person_affiliations",
+    "current_institution_affiliations",
+    "current_project_affiliations",
+    "current_activity_affiliations",
 ]
 
 # Sets of fields can be predefined via environment variables
 # starting with FREIDOK_FIELDSET_PUBLICATION_
 publication_fieldsets = {
-    'default': 'id link publication_year titles publisher persons persons_stat pubtype '
-               'source_journal source_compilation pub_ids preview_image'.split()
+    "default": (
+        "id link publication_year titles publisher persons persons_stat pubtype "
+        "source_journal source_compilation pub_ids preview_image".split()
+    )
 }
 
 
 # ExportFormats = Enum('ExportFormats', ['MARKDOWN', 'JSON', 'HTML', 'TEMPLATE'])
 class ExportFormat(str, Enum):
-    MARKDOWN = 'markdown'
-    HTML = 'html'
-    JSON = 'json'
-    TEMPLATE = 'template'
+    MARKDOWN = "markdown"
+    HTML = "html"
+    JSON = "json"
+    TEMPLATE = "template"
 
 
-def env2dict(env_prefix: str, key_mapper: Callable[[str], str] = str,
-             value_mapper: Callable = None):
+def env2dict(
+    env_prefix: str,
+    key_mapper: Callable[[str], str] = str,
+    value_mapper: Callable = None,
+):
     """Return certain values from env"""
     d = {}
     if not env_prefix:
@@ -71,9 +122,7 @@ def env2dict(env_prefix: str, key_mapper: Callable[[str], str] = str,
 def load_publication_fieldsets():
     """Update pre-defined sets of fields from environment"""
     d = env2dict(
-        'FREIDOK_FIELDSET_PUBLICATION_',
-        key_mapper=str.lower,
-        value_mapper=str2list
+        "FREIDOK_FIELDSET_PUBLICATION_", key_mapper=str.lower, value_mapper=str2list
     )
     publication_fieldsets.update(d)
 
@@ -93,8 +142,8 @@ def arguments():
         return x
 
     def year_range_type(y):
-        if m := re.match(r'^\d{4}(?:-\d{4})?$', y):
-            return list(map(int, y.split('-')))
+        if m := re.match(r"^\d{4}(?:-\d{4})?$", y):
+            return list(map(int, y.split("-")))
         else:
             raise argparse.ArgumentTypeError(f"{y} is not a valid year range")
 
@@ -115,154 +164,225 @@ def arguments():
     def language_type(value):
         items = str2list(value)
         for item in items:
-            if not (m := re.match(r'^[a-zA-Z]{3}$', item)):
+            if not (m := re.match(r"^[a-zA-Z]{3}$", item)):
                 raise argparse.ArgumentTypeError(
-                    f"Invalid 3-letter language code: '{item}'")
+                    f"Invalid 3-letter language code: '{item}'"
+                )
         else:
             return items
 
     def api_params_type(value):
         params = {}
-        item: str = ''
+        item: str = ""
         for item in value.split():
             try:
-                key, val = item.split('=')
+                key, val = item.split("=")
                 params[key] = val
             except ValueError:
                 raise argparse.ArgumentTypeError(
-                    f"Invalid API parameter string: '{value}' ({item})")
+                    f"Invalid API parameter string: '{value}' ({item})"
+                )
         return params
 
     # root parser
-    argp_main = argparse.ArgumentParser(prog='freidok', add_help=False)
-    group = argp_main.add_argument_group('options')
+    argp_main = argparse.ArgumentParser(prog="freidok", add_help=False)
+    group = argp_main.add_argument_group("options")
     group.add_argument(
-        '-h', '--help', action='help',
-        help="Show this help text")
+        "-h",
+        "--help",
+        action="help",
+        help="Show this help text",
+    )
 
     # parent parser for all api subparsers
     argp_api = argparse.ArgumentParser(add_help=False)
 
     # common subparser options
     argp_api.add_argument(
-        '--format', choices=['markdown', 'html', 'json'],
-        help='Output file format (ignored if --template is provided)')
+        "--format",
+        choices=["markdown", "html", "json"],
+        help="Output file format (ignored if --template is provided)",
+    )
 
     argp_api.add_argument(
-        '--template', metavar='FILE', type=Path,
-        help='Custom Jinja2 template file path')
+        "--template",
+        metavar="FILE",
+        type=Path,
+        help="Custom Jinja2 template file path",
+    )
 
     argp_api.add_argument(
-        '--out', type=Path,
-        help='Output file, otherwise stdout')
+        "--out",
+        type=Path,
+        help="Output file, otherwise stdout",
+    )
 
     argp_api.add_argument(
-        '-h', '--help', action='help',
-        help="Show this help text")
+        "-h",
+        "--help",
+        action="help",
+        help="Show this help text",
+    )
 
     # group for common API settings
-    argp_api_settings = argp_api.add_argument_group('general settings')
+    argp_api_settings = argp_api.add_argument_group("general settings")
 
-    env_url = os.getenv('FREIDOK_URL', 'https://freidok.uni-freiburg.de/jsonApi/v1/')
+    env_url = os.getenv("FREIDOK_URL", "https://freidok.uni-freiburg.de/jsonApi/v1/")
     argp_api_settings.add_argument(
-        '--source', default=env_url, required=not env_url,
-        help='URL of FreiDok JSON API or path to JSON file')
+        "--source",
+        default=env_url,
+        required=not env_url,
+        help="URL of FreiDok JSON API or path to JSON file",
+    )
 
     argp_api_settings.add_argument(
-        '--maxitems', metavar='N', default=100,
+        "--maxitems",
+        metavar="N",
+        default=100,
         type=partial(int_minmax_type, xmin=1, xmax=100),
-        help='Maximum number of items to retrieve')
+        help="Maximum number of items to retrieve",
+    )
 
     argp_api_settings.add_argument(
-        '--startitem', metavar='N', default=0, type=int,
-        help='Start index of retrieved items (useful for pagination)')
+        "--startitem",
+        metavar="N",
+        default=0,
+        type=int,
+        help="Start index of retrieved items (useful for pagination)",
+    )
 
-    default_langs = 'eng,deu'
-    env_langs = os.getenv('FREIDOK_LANGUAGES', default_langs)
+    default_langs = "eng,deu"
+    env_langs = os.getenv("FREIDOK_LANGUAGES", default_langs)
     argp_api_settings.add_argument(
-        '--langs', metavar='LANG[,LANG...]', type=language_type, default=env_langs,
-        help="Comma-separated list of preferred languages "
-             f"(3-letter codes, decreasing preference, default={default_langs})")
+        "--langs",
+        metavar="LANG[,LANG...]",
+        type=language_type,
+        default=env_langs,
+        help=(
+            "Comma-separated list of preferred languages "
+            f"(3-letter codes, decreasing preference, default={default_langs})"
+        ),
+    )
 
     argp_api_settings.add_argument(
-        '-n', '--dryrun', action='store_true',
-        help="Only print API request, don't send it")
+        "-n",
+        "--dryrun",
+        action="store_true",
+        help="Only print API request, don't send it",
+    )
 
-    subparsers = argp_main.add_subparsers(
-        title='actions',
-        description='',
-        help='')
+    subparsers = argp_main.add_subparsers(title="actions", description="", help="")
 
     #
     # subparser: publications
     #
 
     sub_pub = subparsers.add_parser(
-        'publ', parents=[argp_api],
-        help='Retrieve publications', add_help=False)
+        "publ", parents=[argp_api], help="Retrieve publications", add_help=False
+    )
 
-    sub_pub_filters = sub_pub.add_argument_group('filter options')
+    sub_pub_filters = sub_pub.add_argument_group("filter options")
     sub_pub_filters.add_argument(
-        '--id', type=intlist, metavar='ID[,ID...]',
-        help='Retrieve publications by ID')
-
-    sub_pub_filters.add_argument(
-        '--pers-id', type=intlist, metavar='ID[,ID...]',
-        help='Filter by person IDs')
-
-    sub_pub_filters.add_argument(
-        '--inst-id', type=intlist, metavar='ID[,ID...]',
-        help='Filter by institution IDs')
+        "--id",
+        type=intlist,
+        metavar="ID[,ID...]",
+        help="Retrieve publications by ID",
+    )
 
     sub_pub_filters.add_argument(
-        '--proj-id', type=intlist, metavar='ID[,ID...]',
-        help='Filter by project IDs')
+        "--pers-id",
+        type=intlist,
+        metavar="ID[,ID...]",
+        help="Filter by person IDs",
+    )
 
     sub_pub_filters.add_argument(
-        '--title', metavar='TERM',
-        help='Filter by title ("contains")')
+        "--inst-id",
+        type=intlist,
+        metavar="ID[,ID...]",
+        help="Filter by institution IDs",
+    )
 
     sub_pub_filters.add_argument(
-        '--years', metavar='YYYY[-YYYY]', type=year_range_type, default=0,
-        help='Filter by year of publication')
+        "--proj-id",
+        type=intlist,
+        metavar="ID[,ID...]",
+        help="Filter by project IDs",
+    )
 
     sub_pub_filters.add_argument(
-        '--maxpers', metavar='N', default=0, type=int,
-        help='Limit the number of listed authors')
+        "--title",
+        metavar="TERM",
+        help="Filter by title ('contains')",
+    )
+
+    sub_pub_filters.add_argument(
+        "--years",
+        metavar="YYYY[-YYYY]",
+        type=year_range_type,
+        default=0,
+        help="Filter by year of publication",
+    )
+
+    sub_pub_filters.add_argument(
+        "--maxpers",
+        metavar="N",
+        default=0,
+        type=int,
+        help="Limit the number of listed authors",
+    )
 
     group = sub_pub_filters.add_mutually_exclusive_group()
 
     group.add_argument(
-        '--fields', metavar='F[,F...]',
+        "--fields",
+        metavar="F[,F...]",
         type=partial(multi_choice_type, allowed=PUBLICATION_FIELDS),
-        help='Field(s) to include in response. '
-             'Available fields: ' + ', '.join(PUBLICATION_FIELDS))
+        help="Field(s) to include in response. Available fields: "
+        + ", ".join(PUBLICATION_FIELDS),
+    )
 
     group.add_argument(
-        '--fieldset', metavar='NAME',
+        "--fieldset",
+        metavar="NAME",
         type=partial(simple_choice_type, allowed=publication_fieldsets),
-        help='Predefined set of fields. '
-             'Available sets: ' + str(list(publication_fieldsets.keys())))
+        help="Predefined set of fields. Available sets: "
+        + str(list(publication_fieldsets.keys())),
+    )
 
     sub_pub_filters.add_argument(
-        '--params', metavar='STR', dest='api_params', type=api_params_type,
-        help='Additional parameters passed to freidok API, '
-             'e.g. "transitive=true pubtype=book"')
+        "--params",
+        metavar="STR",
+        dest="api_params",
+        type=api_params_type,
+        help=(
+            "Additional parameters passed to freidok API, "
+            'e.g. "transitive=true pubtype=book"'
+        ),
+    )
 
     sub_pub_filters.add_argument(
-        '--authors-abbrev', metavar='STR', nargs='?', const='',
-        help='Abbreviate authors first names [with optional character] '
-             '(ignored if --format=json)')
+        "--authors-abbrev",
+        metavar="STR",
+        nargs="?",
+        const="",
+        help=(
+            "Abbreviate authors first names [with optional character] "
+            "(ignored if --format=json)"
+        ),
+    )
 
     sub_pub_filters.add_argument(
-        '--authors-reverse', action='store_true',
-        help='List authors names as "last name, first name" '
-             '(ignored if --format=json)')
+        "--authors-reverse",
+        action="store_true",
+        help='List authors names as "last name, first name" (ignored if --format=json)',
+    )
 
     sub_pub_filters.add_argument(
-        '--authors-sep', metavar='STR',
-        help='Separate individual authors with STR '
-             '(ignored if --format=json)')
+        "--authors-sep",
+        metavar="STR",
+        help="Separate individual authors with STR (ignored if --format=json)",
+    )
 
     sub_pub.set_defaults(func=get_publications)
 
@@ -271,18 +391,27 @@ def arguments():
     #
 
     sub_inst = subparsers.add_parser(
-        'inst', parents=[argp_api], add_help=False,
-        help='Retrieve institutions')
+        "inst",
+        parents=[argp_api],
+        add_help=False,
+        help="Retrieve institutions",
+    )
 
-    sub_inst_filters = sub_inst.add_argument_group('filter options')
+    sub_inst_filters = sub_inst.add_argument_group("filter options")
 
     sub_inst_filters.add_argument(
-        '--id', type=str2list, metavar='ID[,ID...]',
-        help='One or many institution IDs')
+        "--id",
+        type=str2list,
+        metavar="ID[,ID...]",
+        help="One or many institution IDs",
+    )
 
     sub_inst_filters.add_argument(
-        '--name', type=str, metavar='TERM',
-        help='Show institutions containing TERM')
+        "--name",
+        type=str,
+        metavar="TERM",
+        help="Show institutions containing TERM",
+    )
 
     sub_inst.set_defaults(func=get_institutions)
 
@@ -308,9 +437,9 @@ def get_output_format(args):
 
     if args.out:
         match args.out.suffix.lower():
-            case ('.htm' | '.html'):
+            case (".htm" | ".html"):
                 return ExportFormat.HTML
-            case '.json':
+            case ".json":
                 return ExportFormat.JSON
             case _:
                 return ExportFormat.MARKDOWN
@@ -319,12 +448,13 @@ def get_output_format(args):
 
 
 def create_freidok_client(args):
-    if args.source.startswith('http'):
+    if args.source.startswith("http"):
         return FreidokApiClient(
             base_url=args.source,
             user_agent=USER_AGENT,
             dryrun=args.dryrun,
-            default_max_items=args.maxitems)
+            default_max_items=args.maxitems,
+        )
     else:
         return FreidokFileReader(file=args.source)
 
@@ -346,7 +476,7 @@ def get_publications(args):
     elif args.fieldset:
         fields = publication_fieldsets[args.fieldset]
     else:
-        fields = publication_fieldsets['default']
+        fields = publication_fieldsets["default"]
 
     # additional API parameters
     params = {}
@@ -354,12 +484,12 @@ def get_publications(args):
     # sort params
     # todo: make sort parameters available on command line
     sortfields = []
-    if 'publication_year' in fields:
-        sortfields.append('publication_year+desc')
-    if 'id' in fields:
-        sortfields.append('id+desc')
+    if "publication_year" in fields:
+        sortfields.append("publication_year+desc")
+    if "id" in fields:
+        sortfields.append("id+desc")
     if sortfields:
-        params['sortfield'] = ','.join(sortfields)
+        params["sortfield"] = ",".join(sortfields)
 
     if args.api_params:
         params.update(args.api_params)
@@ -379,21 +509,24 @@ def get_publications(args):
         **params,
     )
 
-    if args.langs != ['ALL']:
+    if args.langs != ["ALL"]:
         data = modify.json_strip_languages(data, preferred=args.langs)
 
     publist = Publications(**data)
 
     # add pre-formatted authors list to each publication object (_extras_authors)
     modify.add_author_list_string(
-        publist, abbrev=args.authors_abbrev, reverse=args.authors_reverse,
-        sep=args.authors_sep)
+        publist,
+        abbrev=args.authors_abbrev,
+        reverse=args.authors_reverse,
+        sep=args.authors_sep,
+    )
 
     if args.authors_abbrev:
         modify.shorten_author_firstnames(publist, sep=args.authors_abbrev)
 
     # sort publication links by type
-    modify.sort_links_by_type(publist, preferred=['doi'])
+    modify.sort_links_by_type(publist, preferred=["doi"])
 
     export(publist, data, args)
 
@@ -405,7 +538,7 @@ def get_institutions(args):
         name=args.name,
     )
 
-    if args.langs != ['ALL']:
+    if args.langs != ["ALL"]:
         data = modify.json_strip_languages(data, preferred=args.langs)
 
     items = Institutions(**data)
@@ -414,32 +547,31 @@ def get_institutions(args):
 
 
 def export(items, data, args):
-    outfile = args.out or '-'
+    outfile = args.out or "-"
     outfmt = get_output_format(args)
     match outfmt:
         case ExportFormat.HTML if items.type == "publication":
-            PublicationsHtmlExporter.export(
-                items, outfile, template_file=args.template)
+            PublicationsHtmlExporter.export(items, outfile, template_file=args.template)
 
         case ExportFormat.HTML if items.type == "institution":
-            InstitutionsHtmlExporter.export(
-                items, outfile, template_file=args.template)
+            InstitutionsHtmlExporter.export(items, outfile, template_file=args.template)
 
         case ExportFormat.MARKDOWN if items.type == "publication":
             PublicationsMarkdownExporter.export(
-                items, outfile, template_file=args.template)
+                items, outfile, template_file=args.template
+            )
 
         case ExportFormat.MARKDOWN if items.type == "institution":
             InstitutionsMarkdownExporter.export(
-                items, outfile, template_file=args.template)
+                items, outfile, template_file=args.template
+            )
 
         case ExportFormat.TEMPLATE:
-            TemplateExporter().export(
-                items, outfile, template_file=args.template)
+            TemplateExporter().export(items, outfile, template_file=args.template)
 
         case ExportFormat.JSON:
-            with opens(outfile, encoding='utf-8') as f:
+            with opens(outfile, encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
 
         case _:
-            raise NotImplementedError(f'Unsupported format: {outfmt}')
+            raise NotImplementedError(f"Unsupported format: {outfmt}")

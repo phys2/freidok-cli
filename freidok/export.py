@@ -11,6 +11,7 @@ class Exporter(metaclass=abc.ABCMeta):
     """
     Publications exporter base class.
     """
+
     pass
 
 
@@ -29,22 +30,22 @@ class TemplateExporter(Exporter):
         """Load Jinja2 template from file"""
         env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(template_file.parent),
-            **self.environment_args
+            **self.environment_args,
         )
         return env.get_template(template_file.name)
 
     def _load_default_template(self):
         """Load Jinja2 template from our package"""
         env = jinja2.Environment(
-            loader=jinja2.PackageLoader('freidok', 'templates'),
-            **self.environment_args
+            loader=jinja2.PackageLoader("freidok", "templates"), **self.environment_args
         )
         return env.get_template(self.default_template)
 
-    def export(self, publications: Publications, outfile: str | Path,
-               template_file=None):
+    def export(
+        self, publications: Publications, outfile: str | Path, template_file=None
+    ):
         context = {
-            'items': publications.docs,
+            "items": publications.docs,
         }
 
         if template_file:
@@ -54,20 +55,22 @@ class TemplateExporter(Exporter):
         else:
             raise ValueError("No template specified")
 
-        with opens(outfile, mode='w', encoding='utf-8') as fout:
+        with opens(outfile, mode="w", encoding="utf-8") as fout:
             fout.write(template.render(context))
 
 
 PublicationsHtmlExporter = TemplateExporter(
-    default_template='publications/simple-list.html',
-    jinja_args=dict(autoescape=True))
+    default_template="publications/simple-list.html", jinja_args=dict(autoescape=True)
+)
 
 PublicationsMarkdownExporter = TemplateExporter(
-    default_template='publications/simple-list.md')
+    default_template="publications/simple-list.md"
+)
 
 InstitutionsHtmlExporter = TemplateExporter(
-    default_template='institutions/simple-list.html',
-    jinja_args=dict(autoescape=True))
+    default_template="institutions/simple-list.html", jinja_args=dict(autoescape=True)
+)
 
 InstitutionsMarkdownExporter = TemplateExporter(
-    default_template='institutions/simple-list.md')
+    default_template="institutions/simple-list.md"
+)

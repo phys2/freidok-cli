@@ -1,7 +1,7 @@
 """
 Manually generated model classes for freidok API responses of type "institution".
 """
-from typing import Annotated, Any, Optional
+from typing import Annotated, Optional
 
 from pydantic import BaseModel, Extra, Field
 
@@ -14,10 +14,7 @@ class Lifetime(BaseModel):
     class Config:
         extra = Extra.allow
 
-    from_: Annotated[
-        Optional[str],
-        Field(alias='global')
-    ] = None
+    from_: Annotated[Optional[str], Field(alias="global")] = None
     until: Optional[str] = None
     value: Optional[str] = None
 
