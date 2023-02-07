@@ -378,13 +378,13 @@ def get_publications(args):
 
     publist = Publications(**data)
 
-    if args.authors_abbrev:
-        modify.shorten_author_firstnames(publist, sep=args.authors_abbrev)
-
     # add pre-formatted authors list to each publication object (_extras_authors)
     modify.add_author_list_string(
         publist, abbrev=args.authors_abbrev, reverse=args.authors_reverse,
         sep=args.authors_sep)
+
+    if args.authors_abbrev:
+        modify.shorten_author_firstnames(publist, sep=args.authors_abbrev)
 
     # sort publication links by type
     modify.sort_links_by_type(publist, preferred=['doi'])
