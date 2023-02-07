@@ -302,10 +302,10 @@ def get_output_format(args):
         match args.out.suffix.lower():
             case ('.htm' | '.html'):
                 return ExportFormat.HTML
-            case '.md':
-                return ExportFormat.MARKDOWN
-            case _:
+            case '.json':
                 return ExportFormat.JSON
+            case _:
+                return ExportFormat.MARKDOWN
 
     return ExportFormat.MARKDOWN
 
