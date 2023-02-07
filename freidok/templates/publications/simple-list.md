@@ -1,5 +1,5 @@
 # Publications
-{% for year, items in publications|groupby("publication_year.value")|reverse %}
+{% for year, year_items in items|groupby("publication_year.value")|reverse %}
    {# This shows how an authors list could be assembled within the template:  
        {% set comma = joiner(", ") %}
        {% set authors %} 
@@ -12,7 +12,7 @@
 
 ## {{ year }}
 
-{% for pub in items %}
+{% for pub in year_items %}
 -  {{ pub._extras_authors | wordwrap(break_long_words=false, break_on_hyphens=false, wrapstring='\n   ') }}
 
    {% if pub.titles %}

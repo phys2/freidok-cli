@@ -12,8 +12,10 @@ from dotenv import load_dotenv
 from freidok import modify
 from freidok.client import FreidokApiClient, FreidokFileReader
 from freidok.export import PublicationsHtmlExporter, \
-    PublicationsMarkdownExporter, TemplateExporter
-from freidok.models.api import Publications
+    PublicationsMarkdownExporter, TemplateExporter, InstitutionsMarkdownExporter, \
+    InstitutionsHtmlExporter
+from freidok.models.institutions import Institutions
+from freidok.models.publications import Publications
 from freidok.utils import str2list, opens
 
 USER_AGENT = 'freidok-retrieve/1.0'
@@ -177,8 +179,8 @@ def arguments():
     env_langs = os.getenv('FREIDOK_LANGUAGES', default_langs)
     argp_api_settings.add_argument(
         '--langs', metavar='LANG[,LANG...]', type=language_type, default=env_langs,
-        help='Comma-separated list of preferred languages '
-             f"(3-letter codes, default={default_langs})")
+        help="Comma-separated list of preferred languages "
+             f"(3-letter codes, decreasing preference, default={default_langs})")
 
     argp_api_settings.add_argument(
         '-n', '--dryrun', action='store_true',
@@ -371,16 +373,19 @@ def get_publications(args):
         **params,
     )
 
+    if args.langs != ['ALL']:
+        data = modify.json_strip_languages(data, preferred=args.langs)
+
     publist = Publications(**data)
 
     if args.authors_abbrev:
         modify.shorten_author_firstnames(publist, sep=args.authors_abbrev)
+
     # add pre-formatted authors list to each publication object (_extras_authors)
     modify.add_author_list_string(
         publist, abbrev=args.authors_abbrev, reverse=args.authors_reverse,
         sep=args.authors_sep)
-    # sort titles, abstracts, etc. by preferred language
-    modify.sort_items_by_language(publist, preferred=args.langs)
+
     # sort publication links by type
     modify.sort_links_by_type(publist, preferred=['doi'])
 
@@ -389,29 +394,46 @@ def get_publications(args):
 
 def get_institutions(args):
     client = create_freidok_client(args)
-
     data = client.get_institutions(
         ids=args.id,
         name=args.name,
     )
-    print(data)
+
+    if args.langs != ['ALL']:
+        data = modify.json_strip_languages(data, preferred=args.langs)
+
+    items = Institutions(**data)
+
+    export(items, data, args)
 
 
-def export(publist, data, args):
+def export(items, data, args):
     outfile = args.out or '-'
     outfmt = get_output_format(args)
     match outfmt:
-        case ExportFormat.HTML:
+        case ExportFormat.HTML if items.type == "publication":
             PublicationsHtmlExporter.export(
-                publist, outfile, template_file=args.template)
-        case ExportFormat.MARKDOWN:
+                items, outfile, template_file=args.template)
+
+        case ExportFormat.HTML if items.type == "institution":
+            InstitutionsHtmlExporter.export(
+                items, outfile, template_file=args.template)
+
+        case ExportFormat.MARKDOWN if items.type == "publication":
             PublicationsMarkdownExporter.export(
-                publist, outfile, template_file=args.template)
+                items, outfile, template_file=args.template)
+
+        case ExportFormat.MARKDOWN if items.type == "institution":
+            InstitutionsMarkdownExporter.export(
+                items, outfile, template_file=args.template)
+
         case ExportFormat.TEMPLATE:
             TemplateExporter().export(
-                publist, outfile, template_file=args.template)
+                items, outfile, template_file=args.template)
+
         case ExportFormat.JSON:
             with opens(outfile, encoding='utf-8') as f:
-                json.dump(data, f)
+                json.dump(data, f, indent=2)
+
         case _:
             raise NotImplementedError(f'Unsupported format: {outfmt}')

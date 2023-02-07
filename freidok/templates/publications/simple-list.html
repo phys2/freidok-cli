@@ -41,10 +41,10 @@
 <body>
 <h1>Publications</h1>
 <ul class="publication-list">
-	{% for year, items in publications|groupby('publication_year.value')|reverse %}
+	{% for year, year_items in items|groupby('publication_year.value')|reverse %}
 		<li class="pub-year">{{ year }}</li>
 		<ul>
-			{% for pub in items %}
+			{% for pub in year_items %}
 			<li class="pub {{ loop.cycle('odd', 'even') }}">
 				<div class="pub-wrapper">
 					{# image #}

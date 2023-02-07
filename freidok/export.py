@@ -3,7 +3,7 @@ from pathlib import Path
 
 import jinja2
 
-from freidok.models.api import Publications
+from freidok.models.publications import Publications
 from freidok.utils import opens
 
 
@@ -44,7 +44,7 @@ class TemplateExporter(Exporter):
     def export(self, publications: Publications, outfile: str | Path,
                template_file=None):
         context = {
-            'publications': publications.docs,
+            'items': publications.docs,
         }
 
         if template_file:
@@ -64,3 +64,10 @@ PublicationsHtmlExporter = TemplateExporter(
 
 PublicationsMarkdownExporter = TemplateExporter(
     default_template='publications/simple-list.md')
+
+InstitutionsHtmlExporter = TemplateExporter(
+    default_template='institutions/simple-list.html',
+    jinja_args=dict(autoescape=True))
+
+InstitutionsMarkdownExporter = TemplateExporter(
+    default_template='institutions/simple-list.md')

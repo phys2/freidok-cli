@@ -1,4 +1,4 @@
-from freidok.models.api import Publications, Person
+from freidok.models.publications import Publications, Person
 
 
 def preference_index(value, preferred_values: list):
@@ -21,13 +21,48 @@ def preference_index(value, preferred_values: list):
         return len(preferred_values)
 
 
-def sort_items_by_language(publist: Publications, preferred: list[str]):
-    """Sort specific publication data by preferred language"""
-    for pub in publist.docs:
-        attributes = ['titles', 'abstracts']
-        for attr in attributes:
-            if items := getattr(pub, attr, None):
-                items.sort(key=lambda t: preference_index(t.language, preferred))
+def json_strip_languages(node, attr="language", preferred=("eng", "deu", "ger")):
+    """
+    Recursively traverse a json dict and remove objects in non-preferred languages.
+
+    :param node: Node in json dict tree
+    :param attr: Sort lists with dict items having this key
+    :param preferred: Sequence of preferred languages
+    """
+    if isinstance(node, dict):
+        return {k: json_strip_languages(v, attr, preferred) for k, v in node.items()}
+    elif isinstance(node, list):
+        # is a proper list of objects having a matching attribute?
+        if len(node) > 1 and isinstance(node[0], dict) and attr in node[0]:
+            # sort by language
+            node.sort(key=lambda x: preference_index(x[attr], preferred))
+            # remove all but first item(s) (with the preferred language)
+            k = 1
+            while k < len(node) and node[k][attr] == node[0][attr]:
+                k += 1
+            node = node[0:k]
+        return [json_strip_languages(item, attr, preferred) for item in node]
+    else:
+        return node
+
+
+# def walk_dict_sort_by_attr(node, attr, sorter):
+#     """
+#     Recursively traverse a (json) dict and apply custom sorter to selected lists.
+#
+#     :param node: Node in json dict tree
+#     :param attr: Sort lists with dict items having this key
+#     :param sorter: List sort function
+#     """
+#     if isinstance(node, dict):
+#         for val in node.values():
+#             walk_dict_sort_by_attr(val, attr, sorter)
+#     elif isinstance(node, list):
+#         # is a proper list of objects having a matching attribute?
+#         if len(node) > 1 and isinstance(node[0], dict) and attr in node[0]:
+#             node.sort(key=sorter)
+#         for item in node:
+#             walk_dict_sort_by_attr(item, attr, sorter)
 
 
 def sort_links_by_type(publist: Publications, preferred: list[str]):

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Institutions</title>
+	<style>
+			body {
+					font-family: sans-serif;
+					line-height: 130%;
+			}
+
+			th {
+					background-color: #555;
+					color: white;
+			}
+
+      td {
+          vertical-align: top;
+					padding: 0.5em;
+      }
+
+			td:first-child {
+					padding-right: 1em;
+			}
+
+			tr.odd td {
+					background-color: #eee;
+			}
+
+			tr.even td {
+					background-color: #ddd;
+			}
+	</style>
+</head>
+
+<body>
+	<h1>Institutions</h1>
+	<table>
+		<tr>
+			<th>Id</th>
+			<th>Names</th>
+		</tr>
+		{% for inst in items %}
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+			{% if inst.link %}
+				<td><a href="{{ inst.link }}" title="View on FreiDok">{{ inst.id }}</a></td>
+			{% else %}
+				<td>{{ inst.id }}</td>
+			{% endif %}
+			<td>
+				{% for name in inst.names %}
+				{{ name.value }}<br/>
+				{% endfor %}
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+</body>
+</html>
