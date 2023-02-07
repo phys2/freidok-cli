@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "http://freidok.uni-freiburg.de/publications.json",
+  "$id": "https://freidok.uni-freiburg.de/publications.json",
   "type": "object",
   "title": "Publications",
   "description": "Schema for the JSON-Output of a List of publications by the API-v1 of FreiDok plus",
@@ -54,20 +54,23 @@
               "https://freidok.uni-freiburg.de/data/16160"
             ]
           },
-          "owner": {
+          "created_by": {
             "type": "object",
-            "description": "Information about authentification. ONLY VISIBLE FOR ADMINS OR OWNERS.",
+            "description": "Information about creator. ONLY VISIBLE FOR ADMINS OR CREATOR.",
             "examples": [
               {
-                "type_value": "authentifiziert per Lopes-TAN",
-                "type": "lopes_tan",
-                "value": "21212"
+                "value": 12333,
+                "forename": "Peterchen",
+                "surname": "Paulerer",
+                "type": "shib_login",
+                "type_value": "Login per Shibboleth",
+                "shib_id": "bla123@uni-freiburg.de",
+                "creator_tan_person_id": null
               }
             ],
             "required": [
               "type",
-              "type_value",
-              "value"
+              "type_value"
             ],
             "properties": {
               "type": {
@@ -79,8 +82,30 @@
                 "description": "language-dependend description for type of authentification"
               },
               "value": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "user-id of the creator"
+              },
+              "forename": {
                 "type": "string",
-                "description": "eppn or lopes-ID of the owner"
+                "description": "firstname of the creator"
+              },
+              "surname": {
+                "type": "string",
+                "description": "lastname of the  creator"
+              },
+              "shib_id": {
+                "type": "string",
+                "description": "eppn of the creator"
+              },
+              "creator_tan_person_id": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "lopes-ID of the creator"
               }
             }
           },
@@ -95,7 +120,7 @@
                   "language": "eng",
                   "language_value": "englisch",
                   "value": "Background<br>Apoid wasps and bees (Apoidea) are an ecologically and morphologically diverse group of Hymenoptera, with some species of bees having evolved eusocial societies. Major problems for our understanding of the evolutionary history of Apoidea have been the difficulty to trace the phylogenetic origin and to reliably estimate the geological age of bees. To address these issues, we compiled a comprehensive phylogenomic dataset by simultaneously analyzing target DNA enrichment and transcriptomic sequence data, comprising 195 single-copy protein-coding genes and covering all major lineages of apoid wasps and bee families.<br><br>Results<br>Our compiled data matrix comprised 284,607 nucleotide sites that we phylogenetically analyzed by applying a combination of domain- and codon-based partitioning schemes. The inferred results confirm the polyphyletic status of the former family “Crabronidae”, which comprises nine major monophyletic lineages. We found the former subfamily Pemphredoninae to be polyphyletic, comprising three distantly related clades. One of them, Ammoplanina, constituted the sister group of bees in all our analyses. We estimate the origin of bees to be in the Early Cretaceous (ca. 128 million years ago), a time period during which angiosperms rapidly radiated. Finally, our phylogenetic analyses revealed that within the Apoidea, (eu)social societies evolved exclusively in a single clade that comprises pemphredonine and philanthine wasps as well as bees.<br><br>Conclusion<br>By combining transcriptomic sequences with those obtained via target DNA enrichment, we were able to include an unprecedented large number of apoid wasps in a phylogenetic study for tracing the phylogenetic origin of bees. Our results confirm the polyphyletic nature of the former wasp family Crabonidae, which we here suggest splitting into eight families. Of these, the family Ammoplanidae possibly represents the extant sister lineage of bees. Species of Ammoplanidae are known to hunt thrips, of which some aggregate on flowers and feed on pollen. The specific biology of Ammoplanidae as predators indicates how the transition from a predatory to pollen-collecting life style could have taken place in the evolution of bees. This insight plus the finding that (eu)social societies evolved exclusively in a single subordinated lineage of apoid wasps provides new perspectives for future comparative studies.",
-                  "grouping": 1
+                  "position": 1
                 }
               ],
               "required": [
@@ -116,9 +141,9 @@
                   "type": "string",
                   "description": "Content of the abstract"
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
@@ -134,7 +159,7 @@
                   "type_value": "Inhalt",
                   "type": "contents",
                   "value": "Meine Forschungsdaten blbla..",
-                  "grouping": 1
+                  "position": 1
                 }
               ],
               "required": [
@@ -155,9 +180,9 @@
                   "type": "string",
                   "description": "the research-description"
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
@@ -173,15 +198,14 @@
                   "type": "table_of_contents",
                   "type_value": "Inhaltsverzeichnis",
                   "value": "1. Kapitel 1; 2. Kapitel 2; ...",
-                  "grouping": 1,
+                  "position": 1,
                   "datacite": "descriptionType=TableOfContents"
                 }
               ],
               "required": [
                 "type",
                 "type_value",
-                "value",
-                "datacite"
+                "value"
               ],
               "properties": {
                 "type": {
@@ -200,9 +224,9 @@
                   "type": "string",
                   "description": "mapping to Datacite's metadata-schema"
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
@@ -264,7 +288,7 @@
                   "type_value": "DDC - Dewey Decimal Classification",
                   "value": "Biologie",
                   "value_long": "Naturwissenschaften und Mathematik / Biologie",
-                  "grouping": 1
+                  "position": 1
                 }
               ],
               "required": [
@@ -295,55 +319,65 @@
                   "type": "string",
                   "description": "long description (e.g. with parent categories) of the classifications category to assign"
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
           },
-          "classifications_uncontrolled": {
+          "fundings": {
             "type": "array",
-            "description": "List of classification-assignments for classifications, that are NOT imported to FreiDok plus.",
+            "description": "List of funding-information for the publication.",
             "items": {
               "type": "object",
-              "description": "Entry for a classification-asssignment.",
+              "description": "Entry for an funder of the publication",
               "examples": [
                 {
-                  "type": "mesh",
-                  "type_value": "MeSH - Medical Subject Headings",
-                  "value": "123.2 (Orthopädie)",
-                  "grouping": 1
+                  "norm_id": 339,
+                  "value": "Deutsche Forschungsgemeinschaft",
+                  "fundref_id": "blablbalba-111-dbulb",
+                  "grantnumber": "103323215",
+                  "link": "https://freidok.uni-freiburg.de/inst/339",
+                  "__position": 1
                 }
               ],
               "required": [
-                "type",
-                "type_value",
-                "value"
+                "norm_id",
+                "value",
+                "link"
               ],
               "properties": {
-                "type": {
-                  "type": "string",
-                  "description": "attribute-id of the referenced classification"
-                },
-                "type_value": {
-                  "type": "string",
-                  "description": "language-dependend description of the referenced classification"
+                "norm_id": {
+                  "type": "integer",
+                  "description": "FreiDok plus identifier for the insitutiton"
                 },
                 "value": {
                   "type": "string",
-                  "description": "description (and ID) of the classifications category to assign"
+                  "description": "Name of the institution"
                 },
-                "grouping": {
+                "fundref_id": {
+                  "type": "string",
+                  "description": "FundRef-ID"
+                },
+                "grantnumber": {
+                  "type": "string",
+                  "description": "grantnumber"
+                },
+                "link": {
+                  "type": "string",
+                  "description": "url to the FreiDok plus institution"
+                },
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
           },
           "pub_ids": {
             "type": "array",
-            "description": "List of identifiers for the publication. --> PROPOSED TO BE RENAMED TO pub_ids",
+            "description": "List of identifiers for the publication.",
             "items": {
               "type": "object",
               "description": "Entry for an identifier of the publication",
@@ -352,7 +386,7 @@
                   "type": "doi",
                   "type_value": "DOI",
                   "value": "10.1186/s12862-018-1155-8",
-                  "grouping": 1,
+                  "position": 1,
                   "link": "https://doi.org/10.1186/s12862-018-1155-8"
                 },
                 {
@@ -360,20 +394,20 @@
                   "type_value": "URN",
                   "link": "http://nbn-resolving.de/urn:nbn:de:bsz:25-freidok-161606",
                   "value": "urn:nbn:de:bsz:25-freidok-161606",
-                  "grouping": 2
+                  "position": 2
                 },
                 {
                   "type": "ppn",
                   "type_value": "PPN",
                   "value": "510349528",
-                  "grouping": 3,
+                  "position": 3,
                   "link": "https://katalog.ub.uni-freiburg.de/link?id=510349528"
                 },
                 {
                   "type": "dnb",
                   "type_value": "DNB",
                   "value": "1165527464",
-                  "grouping": 4,
+                  "position": 4,
                   "link": "https://d-nb.info/1165527464"
                 }
               ],
@@ -400,9 +434,9 @@
                   "type": "string",
                   "description": "URL to resolve the identifier"
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
@@ -418,7 +452,7 @@
                   "type": "oa_fonds_id",
                   "type_value": "OA Fonds",
                   "value": "OA-BMC-0490",
-                  "grouping": 1
+                  "position": 1
                 }
               ],
               "required": [
@@ -439,16 +473,16 @@
                   "type": "string",
                   "description": "the identifier"
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
           },
           "pubtype": {
             "type": "object",
-            "description": "type of the publication. --> PROPOSED TO BE RENAMED TO pubtype",
+            "description": "type of the publication",
             "examples": [
               {
                 "type": "article",
@@ -480,9 +514,38 @@
               }
             }
           },
+          "oa_status": {
+            "type": "object",
+            "description": "open access status of the publication",
+            "examples": [
+              {
+                "type": "green",
+                "value": "Grün",
+                "is_oa": true
+              }
+            ],
+            "required": [],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "attribute-id of the oa-color"
+              },
+              "value": {
+                "type": "string",
+                "description": "language-dependend description of the oa-color"
+              },
+              "is_oa": {
+                "type": [
+                  "boolean",
+                  "null"
+                ],
+                "description": "is open access"
+              }
+            }
+          },
           "state": {
             "type": "object",
-            "description": "NOT YET IMPLEMENTED. state of review and public availability",
+            "description": "state of review and public availability",
             "examples": [
               {
                 "tech": {
@@ -514,8 +577,7 @@
                 "type": "object",
                 "description": "object for state of review of general metadata",
                 "required": [
-                  "type",
-                  "value"
+                  "type"
                 ],
                 "properties": {
                   "type": {
@@ -532,8 +594,7 @@
                 "type": "object",
                 "description": "object for state of review of technical metadata",
                 "required": [
-                  "type",
-                  "value"
+                  "type"
                 ],
                 "properties": {
                   "type": {
@@ -550,8 +611,7 @@
                 "type": "object",
                 "description": "object for state of review of metadata with regards to content",
                 "required": [
-                  "type",
-                  "value"
+                  "type"
                 ],
                 "properties": {
                   "type": {
@@ -568,8 +628,7 @@
                 "type": "object",
                 "description": "object for state of review of legal metadata",
                 "required": [
-                  "type",
-                  "value"
+                  "type"
                 ],
                 "properties": {
                   "type": {
@@ -586,7 +645,7 @@
           },
           "issued": {
             "type": "object",
-            "description": "NOT YET IMPLEMENTED. An explanation about the purpose of this instance. ONLY VISIBLE FOR ADMINS",
+            "description": "issued-status of the publication",
             "examples": [
               {
                 "value": true
@@ -599,6 +658,42 @@
               "value": {
                 "type": "boolean",
                 "description": "if the publication is already visible online"
+              }
+            }
+          },
+          "locked": {
+            "type": "object",
+            "description": "locked-status of the publication",
+            "examples": [
+              {
+                "value": true
+              }
+            ],
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "type": "boolean",
+                "description": "if the publication can be edited by authorized users"
+              }
+            }
+          },
+          "peerreviewed": {
+            "type": "object",
+            "description": "peerreviewed-status of the publication",
+            "examples": [
+              {
+                "value": true
+              }
+            ],
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "type": "boolean",
+                "description": "if the publication is peerreviewed"
               }
             }
           },
@@ -689,7 +784,7 @@
                   "link": "https://d-nb.info/4182991-8",
                   "mode": "s",
                   "mode_value": "Sachbegriff",
-                  "grouping": 1
+                  "position": 1
                 }
               ],
               "required": [
@@ -697,8 +792,6 @@
                 "type_value",
                 "norm_id",
                 "value",
-                "mode",
-                "mode_value",
                 "link"
               ],
               "properties": {
@@ -730,9 +823,9 @@
                   "type": "string",
                   "description": "url to the keyword in the catalog"
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
@@ -748,7 +841,7 @@
                   "language": "eng",
                   "language_value": "englisch",
                   "value": "Apoid wasps",
-                  "grouping": 1
+                  "position": 1
                 }
               ],
               "required": [
@@ -769,9 +862,9 @@
                   "type": "string",
                   "description": "the keyword"
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
@@ -786,7 +879,7 @@
                 {
                   "type": "eng",
                   "value": "englisch",
-                  "grouping": 1
+                  "position": 1
                 }
               ],
               "required": [
@@ -802,9 +895,9 @@
                   "type": "string",
                   "description": "language-dependend description of the language"
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
@@ -876,15 +969,15 @@
               {
                 "date_submitted": {
                   "value": "23.08.2018 12:10",
-                  "timestamp": "1532530695"
+                  "timestamp": 1532530695
                 },
                 "date_issued": {
                   "value": "23.08.2018 12:11",
-                  "timestamp": "1535014282"
+                  "timestamp": 1535014282
                 },
                 "date_updated": {
                   "value": "23.08.2018 12:11",
-                  "timestamp": "1535014282"
+                  "timestamp": 1535014282
                 }
               }
             ],
@@ -899,7 +992,7 @@
                 "description": "time of submission of the publication in FreiDok plus",
                 "properties": {
                   "timestamp": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "unix-timestamp"
                   },
                   "value": {
@@ -913,7 +1006,7 @@
                 "description": "time of last change of metadata of the publication in FreiDok plus",
                 "properties": {
                   "timestamp": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "unix-timestamp"
                   },
                   "value": {
@@ -927,7 +1020,7 @@
                 "description": "time of the publication being visible online the first time in FreiDok plus",
                 "properties": {
                   "timestamp": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "unix-timestamp"
                   },
                   "value": {
@@ -949,13 +1042,13 @@
                   "language": "eng",
                   "language_value": "englisch",
                   "value": "Phylogenomic analysis of Apoidea sheds nuew light on the sister group of bees",
-                  "grouping": 1
+                  "position": 1
                 },
                 {
                   "language": "ger",
                   "language_value": "deutsch",
                   "value": "Bienen-Publikation",
-                  "grouping": 2
+                  "position": 2
                 }
               ],
               "required": [
@@ -976,9 +1069,9 @@
                   "type": "string",
                   "description": "the title"
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
@@ -1077,24 +1170,16 @@
                     "orcid_imported": "0000-1234-1234-1323",
                     "gnd_imported": "1108295533"
                   },
-                  "grouping": 1
+                  "position": 1
                 }
               ],
               "required": [
                 "type",
                 "type_value",
-                "norm_id",
-                "link",
                 "is_corresponding_author",
                 "value",
-                "forename",
-                "surname",
-                "orcid_link",
-                "gnd_link",
-                "name_forms",
                 "affiliations",
-                "author_function",
-                "import_info"
+                "author_function"
               ],
               "properties": {
                 "type": {
@@ -1106,7 +1191,10 @@
                   "description": "language-dependend description of the person's role"
                 },
                 "norm_id": {
-                  "type": "integer",
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
                   "description": "id of the person in FreiDok plus"
                 },
                 "link": {
@@ -1290,9 +1378,9 @@
                     }
                   }
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
@@ -1417,7 +1505,7 @@
                   "datacite": "Other",
                   "marcxml": "ctb",
                   "lifetime": "2001 - ",
-                  "grouping": 1
+                  "position": 1
                 }
               ],
               "required": [
@@ -1460,9 +1548,9 @@
                   "type": "string",
                   "description": "Lifetime of the insitution. ONLY VISIBLE IF edit=true."
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
@@ -1494,7 +1582,7 @@
                   "order_type": "issue",
                   "order_type_value": "Heft",
                   "value": "Relaxation von Polymeren unter räumlichen Einschränkungen",
-                  "title": "Relaxation von Polymeren unter r\u00e4umlichen Einschr\u00e4nkungen \/ Martin Koch [Autor] ... - 1997",
+                  "title": "Relaxation von Polymeren unter r\u00e4umlichen Einschr\u00e4nkungen / Martin Koch [Autor] ... - 1997",
                   "link": "https://freidok.uni-freiburg.de/data/2"
                 },
                 {
@@ -1504,7 +1592,7 @@
                   "target_type": "doi",
                   "target_type_value": "DOI",
                   "value": "Wissenschaftliche Arbeit XY",
-                  "title": "Wissenschaftliche Arbeit XY \/ AutorXY [Autor] ... 1999",
+                  "title": "Wissenschaftliche Arbeit XY / AutorXY [Autor] ... 1999",
                   "link": "https://doi.org/10.1234/233232313"
                 }
               ],
@@ -1566,7 +1654,7 @@
                   "type_value": "hat eine neuere Version",
                   "norm_id": 16161,
                   "value": "Molecular diagnosis of anti-laminin 332 (epiligrin) mucous membrane pemphigoid",
-                  "title": "Molecular diagnosis of anti-laminin 332 (epiligrin) mucous membrane pemphigoid \/ Roxana Chiorean [Autor] ... - 2018",
+                  "title": "Molecular diagnosis of anti-laminin 332 (epiligrin) mucous membrane pemphigoid / Roxana Chiorean [Autor] ... - 2018",
                   "link": "https://freidok.uni-freiburg.de/data/16161"
                 },
                 {
@@ -1576,7 +1664,7 @@
                   "type_value": "enthält",
                   "norm_id": 3,
                   "value": "Hochgradig nahgeordnete Bisdiazene und ihre Oxide 3",
-                  "title": "Hochgradig nahgeordnete Bisdiazene und ihre Oxide 3 \/ Kai Michael Exner [Autor] ... - 1998",
+                  "title": "Hochgradig nahgeordnete Bisdiazene und ihre Oxide 3 / Kai Michael Exner [Autor] ... - 1998",
                   "link": "https://freidok.uni-freiburg.de/data/3",
                   "order": "2"
                 }
@@ -1630,7 +1718,7 @@
                   "source_id": "123-891471-2148",
                   "value": "BMC evolutionary biology, London 2018",
                   "title": "BMC evolutionary biology",
-                  "link": "https:\/\/katalog.ub.uni-freiburg.de\/link?sb=14123-891471-2148",
+                  "link": "https://katalog.ub.uni-freiburg.de/link?sb=14123-891471-2148",
                   "persons": "Peter Pan [Hrsg.]",
                   "edition": "Second Edition",
                   "place": "London",
@@ -1740,7 +1828,7 @@
                   "source_id": "1471-2148",
                   "value": "BMC evolutionary biology, London 2018",
                   "title": "BMC evolutionary biology",
-                  "link": "https:\/\/katalog.ub.uni-freiburg.de\/link?ss=1471-2148",
+                  "link": "https://katalog.ub.uni-freiburg.de/link?ss=1471-2148",
                   "place": "London",
                   "publisher": "BioMed Central",
                   "year": 2018,
@@ -1836,30 +1924,32 @@
             }
           },
           "series": {
-            "type": "object",
-            "description": "Information about the series.",
-            "examples": [
-              {
-                "value": "1",
-                "volume": "2",
-                "issue": "23"
-              }
-            ],
-            "required": [
-              "value"
-            ],
-            "properties": {
-              "value": {
-                "type": "string",
-                "description": "Name of the series"
-              },
-              "volume": {
-                "type": "string",
-                "description": "Number of name of volume"
-              },
-              "issue": {
-                "type": "string",
-                "description": "Number of name of issue"
+            "type": "array",
+            "description": "TODO",
+            "items": {
+              "type": "object",
+              "description": "Information about the series.",
+              "examples": [
+                {
+                  "value": "1",
+                  "volume": "2",
+                  "issue": "23"
+                }
+              ],
+              "required": [],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "description": "Name of the series"
+                },
+                "volume": {
+                  "type": "string",
+                  "description": "Number of name of volume"
+                },
+                "issue": {
+                  "type": "string",
+                  "description": "Number of name of issue"
+                }
               }
             }
           },
@@ -1991,12 +2081,7 @@
                 "thumbnail900": "https://freidok.uni-freiburg.de/getPreviewImage/16160_900.png"
               }
             ],
-            "required": [
-              "thumbnail90",
-              "thumbnail200",
-              "thumbnail900",
-              "link"
-            ],
+            "required": [],
             "properties": {
               "thumbnail90": {
                 "type": "string",
@@ -2088,7 +2173,12 @@
               "description": "An explanation about the purpose of this instance.",
               "examples": [
                 {
-                  "preview_image": "https://freidok.uni-freiburg.de/getPreviewImage/file/219021_90.png",
+                  "preview_image": {
+                    "thumbnail200": "https://freidok.uni-freiburg.de/getPreviewImage/16160_200.png",
+                    "link": "https://freidok.uni-freiburg.de/getPreviewImage/16160.png",
+                    "thumbnail90": "https://freidok.uni-freiburg.de/getPreviewImage/16160_90.png",
+                    "thumbnail900": "https://freidok.uni-freiburg.de/getPreviewImage/16160_900.png"
+                  },
                   "label": null,
                   "type": "document",
                   "type_value": "veröffentlichtes Dokument / veröffentlichte Publikation",
@@ -2110,10 +2200,15 @@
                     "value": "23.08.2018",
                     "date": "2018-08-23"
                   },
-                  "grouping": 1
+                  "position": 1
                 },
                 {
-                  "preview_image": "https://freidok.uni-freiburg.de/getPreviewImage/file/219023_90.png",
+                  "preview_image": {
+                    "thumbnail200": "https://freidok.uni-freiburg.de/getPreviewImage/16161_200.png",
+                    "link": "https://freidok.uni-freiburg.de/getPreviewImage/16161.png",
+                    "thumbnail90": "https://freidok.uni-freiburg.de/getPreviewImage/16161_90.png",
+                    "thumbnail900": "https://freidok.uni-freiburg.de/getPreviewImage/16161_900.png"
+                  },
                   "label": "Additional files",
                   "type": "original",
                   "type_value": "archiviertes Dokument",
@@ -2135,7 +2230,7 @@
                     "value": "23.08.2018",
                     "date": "2018-08-23"
                   },
-                  "grouping": 2
+                  "position": 2
                 }
               ],
               "required": [
@@ -2149,9 +2244,7 @@
                 "preview_image",
                 "md5sum",
                 "license",
-                "embargo",
-                "_state",
-                "_state_value"
+                "embargo"
               ],
               "properties": {
                 "type": {
@@ -2184,6 +2277,7 @@
                 "preview_image": {
                   "type": "object",
                   "description": "TODO. An explanation about the purpose of this instance.",
+                  "required": [],
                   "properties": {
                     "thumbnail90": {
                       "type": "string",
@@ -2215,7 +2309,7 @@
                       "type": "cc_by",
                       "link": "http://creativecommons.org/licenses/by-nc-nd/4.0/deed.de",
                       "type_value": "Creative Commons CC-BY",
-                      "__value": "Diese Lizenz bestimmt ...",
+                      "value": "Diese Lizenz bestimmt ...",
                       "cc_by_name": "Autor1"
                     }
                   ],
@@ -2223,8 +2317,7 @@
                     "type",
                     "type_value",
                     "cc_by_name",
-                    "link",
-                    "__value"
+                    "link"
                   ],
                   "properties": {
                     "type": {
@@ -2243,9 +2336,9 @@
                       "type": "string",
                       "description": "An explanation about the purpose of this instance."
                     },
-                    "__value": {
+                    "value": {
                       "type": "string",
-                      "description": "An explanation about the purpose of this instance."
+                      "description": "Full text of the License (only visible for owners and admins)"
                     }
                   }
                 },
@@ -2273,17 +2366,17 @@
                     }
                   }
                 },
-                "_state": {
+                "file_state": {
                   "type": "string",
                   "description": "An explanation about the purpose of this instance."
                 },
-                "_state_value": {
+                "file_state_value": {
                   "type": "string",
                   "description": "An explanation about the purpose of this instance."
                 },
-                "grouping": {
+                "position": {
                   "type": "integer",
-                  "description": "grouping of this entry. ONLY VISIBLE IF edit=true."
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
                 }
               }
             }
