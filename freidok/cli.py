@@ -2,6 +2,8 @@ import argparse
 import json
 import os
 import re
+import sys
+import warnings
 from collections.abc import Callable
 from enum import Enum
 from functools import partial
@@ -289,7 +291,11 @@ def arguments():
 
 def run():
     args = arguments()
-    args.func(args)
+    with warnings.catch_warnings(record=True) as caught_warnings:
+        warnings.simplefilter("always")
+        args.func(args)
+        for warn in caught_warnings:
+            print(f"{warn.category.__name__}: {warn.message}", file=sys.stderr)
 
 
 def get_output_format(args):
