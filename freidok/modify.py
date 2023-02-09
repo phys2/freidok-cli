@@ -1,4 +1,4 @@
-from freidok.models.publications import Publications, Person
+from freidok.models.publications import Publications, Person, Doc
 
 
 def preference_index(value, preferred_values: list):
@@ -113,3 +113,22 @@ def add_author_list_string(
     for pub in publist.docs:
         authors = [get_author_name(a, abbrev, reverse) for a in pub.persons]
         pub._extras_authors = sep.join(authors)
+
+
+def has_author(pub: Doc, pattern: str):
+    pattern = pattern.lower()
+    for pers in pub.persons:
+        name = get_author_name(pers)
+        if pattern in name.lower():
+            return True
+    return False
+
+
+def exclude_publications_from_author(publist: Publications, name: str):
+    # fmt: off
+    publist.docs = [
+        doc
+        for doc in publist.docs
+        if not has_author(doc, name)
+    ]
+    # fmt: on

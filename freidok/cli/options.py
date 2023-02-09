@@ -303,6 +303,14 @@ def arguments(func_institutions, func_publications):
         help="Limit the number of listed authors",
     )
 
+    sub_pub_filters.add_argument(
+        "--exclude-author",
+        metavar="STR",
+        help=(
+            "Exclude publications where an author name (<first> <last>) contains STR."
+        ),
+    )
+
     group = sub_pub_filters.add_mutually_exclusive_group()
 
     group.add_argument(
