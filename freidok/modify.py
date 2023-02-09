@@ -96,14 +96,12 @@ def get_author_name(author: Person, abbrev: str | None = None, reverse=False):
     if abbrev is not None:
         firstname = _abbreviate(firstname, sep=abbrev)
 
-    names = [firstname, lastname]
-
     if reverse:
-        names = reversed(names)
+        name = f"{lastname} {firstname}"
+    else:
+        name = f"{firstname} {lastname}"
 
-    name = " ".join(names)
-
-    return name
+    return name.strip()
 
 
 def add_author_list_string(
