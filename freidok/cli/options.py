@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Callable
 
 from freidok.utils import str2list
+from freidok.version import __version__
 
 API_FIELDS_PUBLICATION = [
     "id",
@@ -156,13 +157,27 @@ def arguments(func_institutions, func_publications):
         return params
 
     # root parser
-    argp_main = argparse.ArgumentParser(prog="freidok", add_help=False)
+    argp_main = argparse.ArgumentParser(
+        prog="freidok",
+        add_help=False,
+        description=(
+            "Retrieve publications from FreiDok API and render them as html, Markdown"
+            " or any other text format via Jinja2 templates."
+        ),
+    )
     group = argp_main.add_argument_group("options")
     group.add_argument(
         "-h",
         "--help",
         action="help",
         help="Show this help text",
+    )
+
+    group.add_argument(
+        "--version",
+        action="version",
+        help="Show version info",
+        version=f"%(prog)s {__version__}",
     )
 
     # parent parser for all api subparsers
@@ -306,9 +321,7 @@ def arguments(func_institutions, func_publications):
     sub_pub_filters.add_argument(
         "--exclude-author",
         metavar="STR",
-        help=(
-            "Exclude publications where an author name (<first> <last>) contains STR."
-        ),
+        help="Exclude publications where an author name (<first> <last>) contains STR.",
     )
 
     group = sub_pub_filters.add_mutually_exclusive_group()
