@@ -5,20 +5,20 @@ from enum import Enum
 
 from dotenv import load_dotenv
 
-from freidok import modify
-from freidok.cli import options
-from freidok.client import FreidokApiClient, FreidokFileReader
-from freidok.export import (
+from freidok_cli import modify
+from freidok_cli.cli import options
+from freidok_cli.client import FreidokApiClient, FreidokFileReader
+from freidok_cli.export import (
     InstitutionsHtmlExporter,
     InstitutionsMarkdownExporter,
     PublicationsHtmlExporter,
     PublicationsMarkdownExporter,
     TemplateExporter,
 )
-from freidok.models.institutions import Institutions
-from freidok.models.publications import Publications
-from freidok.utils import opens
-from freidok.version import __version__
+from freidok_cli.models.institutions import Institutions
+from freidok_cli.models.publications import Publications
+from freidok_cli.utils import opens
+from freidok_cli.version import __version__
 
 USER_AGENT = f"freidok-cli/{__version__}"
 

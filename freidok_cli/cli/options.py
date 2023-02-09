@@ -5,8 +5,8 @@ from functools import partial
 from pathlib import Path
 from typing import Callable
 
-from freidok.utils import str2list
-from freidok.version import __version__
+from freidok_cli.utils import str2list
+from freidok_cli.version import __version__
 
 API_FIELDS_PUBLICATION = [
     "id",

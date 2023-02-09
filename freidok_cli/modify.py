@@ -1,4 +1,4 @@
-from freidok.models.publications import Publications, Person, Doc
+from freidok_cli.models.publications import Publications, Person, Doc
 
 
 def preference_index(value, preferred_values: list):

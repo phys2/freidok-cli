@@ -6,7 +6,7 @@ from typing import Any
 import requests
 from requests.utils import get_encoding_from_headers
 
-from freidok.utils import list2str
+from freidok_cli.utils import list2str
 
 
 def create_headers(user_agent=None, user_email=None, extra_headers=None):

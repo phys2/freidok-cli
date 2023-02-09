@@ -3,8 +3,8 @@ from pathlib import Path
 
 import jinja2
 
-from freidok.models.publications import Publications
-from freidok.utils import opens
+from freidok_cli.models.publications import Publications
+from freidok_cli.utils import opens
 
 
 class Exporter(metaclass=abc.ABCMeta):
@@ -37,7 +37,7 @@ class TemplateExporter(Exporter):
     def _load_default_template(self):
         """Load Jinja2 template from our package"""
         env = jinja2.Environment(
-            loader=jinja2.PackageLoader("freidok", "templates"), **self.environment_args
+            loader=jinja2.PackageLoader("freidok_cli", "templates"), **self.environment_args
         )
         return env.get_template(self.default_template)
 
