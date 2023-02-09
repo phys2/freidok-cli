@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "freidok-cli"
-version = "0.1.0"
+version = "1.0.0"
 description = "FreiDok client - retrieve publication lists and render them via Jinja2 templates"
-authors = ["Alexander Haupt <alexander.haupt@physiologie.uni-freiburg.de>"]
+authors = ["Alexander Haupt <alex.haupt@gmail.com>"]
 readme = "README.md"
 license = "MIT"
 classifiers = [
@@ -38,7 +38,7 @@ include = '\.py$'
 extend-exclude = '/models/'
 
 [tool.bumpver]
-current_version = "0.1.0"
+current_version = "1.0.0"
 version_pattern = "MAJOR.MINOR.PATCH[PYTAGNUM]"
 commit_message = "Bump version to {new_version}"
 commit = true
