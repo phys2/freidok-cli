@@ -18,8 +18,9 @@ from freidok.export import (
 from freidok.models.institutions import Institutions
 from freidok.models.publications import Publications
 from freidok.utils import opens
+from freidok.version import __version__
 
-USER_AGENT = "freidok-retrieve/1.0"
+USER_AGENT = f"freidok-cli/{__version__}"
 
 
 class ExportFormat(str, Enum):
