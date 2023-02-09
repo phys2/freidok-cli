@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "freidok"
-version = "0.0.0"
-description = "Retrieve publications from freidok and export via Jinja2 templates"
+name = "freidok-cli"
+version = "0.1.0"
+description = "FreiDok client - retrieve publication lists and render them via Jinja2 templates"
 authors = ["Alexander Haupt <alexander.haupt@physiologie.uni-freiburg.de>"]
 readme = "README.md"
 license = "MIT"
@@ -13,10 +13,10 @@ classifiers = [
 
 [build-system]
 requires = ["poetry-core"]
-build-backend = "poetry_dynamic_versioning.backend"
+build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-python = "3.10.*"
+python = "^3.10"
 requests = "^2.28.1"
 python-dotenv = "^0.21.0"
 pydantic = "^1.10.4"
@@ -29,17 +29,27 @@ freidok = 'freidok.cli.run:main'
 [tool.poetry.group.dev.dependencies]
 datamodel-code-generator = {extras = ["http"], version = "^0.17.0"}
 black = "^23.1.0"
-
-[tool.poetry-dynamic-versioning]
-enable = true
-vcs = "git"
-bump = "true"
-
-[tool.poetry-dynamic-versioning.substitution]
-files = ["*/version.py"]
+bumpver = "^2022.1120"
 
 [tool.black]
 line-length = 88
 target-version = ['py310']
 include = '\.py$'
 extend-exclude = '/models/'
+
+[tool.bumpver]
+current_version = "0.1.0"
+version_pattern = "MAJOR.MINOR.PATCH[PYTAGNUM]"
+commit_message = "Bump version to {new_version}"
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    '^version = "{pep440_version}"$',
+    '^current_version = "{version}"$',
+]
+"freidok/version.py" = [
+    '^__version__ = "{pep440_version}"$',
+]
