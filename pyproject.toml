@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "freidok-cli"
 version = "1.0.0"
-description = "FreiDok client - retrieve publication lists and render them via Jinja2 templates"
-authors = ["Alexander Haupt <alex.haupt@gmail.com>"]
+description = "Retrieve publication lists from FreiDok and render them via Jinja2 templates"
+authors = ["Alexander Haupt <alexander.haupt@physiologie.uni-freiburg.de>"]
 readme = "README.md"
 license = "MIT"
+repository = "https://github.com/phys2/freidok-cli"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",

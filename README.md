@@ -33,13 +33,13 @@ Two subcommands are available:
 
 ### Retrieve institutions
 
-Print the ids and names of all institutions with *physiol* in its name:
-```bash
-freidok inst --name physiol
-```
+#### Examples
 
-Export data to html, prefer German names:
 ```bash
+# Print the ids and names of all institutions with *physiol* in its name
+freidok inst --name physiol
+
+# Export data to html, prefer German names
 freidok inst --name physiol --out inst.html --langs=deu,ger,eng
 ```
 
@@ -76,6 +76,7 @@ filter options:
   --title TERM          Filter by title ("contains")
   --years YYYY[-YYYY]   Filter by year of publication
   --maxpers N           Limit the number of listed authors
+  --exclude-author STR  Exclude publications where an author name ("<first> <last>") contains STR.
   --fields F[,F...]     Field(s) to include in response. 
   --fieldset NAME       Predefined set of fields. Available sets: ['default', 'short']
   --params STR          Additional parameters passed to freidok API, e.g. "transitive=true pubtype=book"
