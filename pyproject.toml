@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "freidok-cli"
 version = "1.0.0"
-description = "Retrieve publication lists from FreiDok and render them via Jinja2 templates"
+description = "A command-line client for FreiDok, the publication platform of the University of Freiburg"
 authors = ["Alexander Haupt <alexander.haupt@physiologie.uni-freiburg.de>"]
 readme = "README.md"
 license = "MIT"

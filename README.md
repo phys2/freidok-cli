@@ -1,20 +1,23 @@
 # freidok-cli
 
-A command-line client for the 
-**[FreiDok](https://freidok.uni-freiburg.de/)** API, 
-the repository for scientific publications of the 
-[University of Freiburg](https://www.uni-freiburg.de), Germany. 
+A command-line client for
+**[FreiDok](https://freidok.uni-freiburg.de/)**, 
+the publication platform, institutional bibliography and research documentation 
+system of the [University of Freiburg](https://www.uni-freiburg.de), Germany. 
 
 ## What it does
 
-- Query FreiDok for institutions and publications of the University of 
-  Freiburg
-- Filter publications by institution, person, project, date, etc.
-- Export the results to any text format (e.g. HTML, Markdown) via Jinja2 
-  templates 
+Retrieve information about institutions and publications of the University of 
+Freiburg, using the FreiDok API. 
 
-Note: The client does not cover the complete FreiDok API, it is focused on 
-retrieving publication data in an easy but flexible way.
+Specifically, the client can
+  - search for an institution by name
+  - retrieve publication lists for any institution, person, project, date, etc.
+  - export publication lists to any text format (e.g. HTML, Markdown) via Jinja2 
+    templates 
+
+_Note: The client does not cover the complete FreiDok API, it is focused on 
+retrieving publication data in an easy but flexible way._
 
 ## Installation
 
@@ -28,8 +31,8 @@ The ```freidok``` executable will be available after installation.
 
 Two subcommands are available:
 
-  - ```freidok publ``` retrieve publication data
-  - ```freidok inst``` retrieve university institutions
+  - ```freidok publ``` retrieves publication data
+  - ```freidok inst``` retrieves university institutions
 
 ### Retrieve institutions
 
@@ -94,32 +97,27 @@ are used by default. Custom templates can be used with ```--template <file>```.
 
 To specify the output format, either 
 
-- use a recognized file extension for the output file.
-  
-  _e.g. ```--out output.html```, ```--out output.md```, ```--out output.json```_
-
-
-- set it explicitly with ```--format html|markdown|json```
-  
-  _This will use built-in default templates for ```html``` and 
-   ```markdown```, respectively._
-
-
-- provide a custom Jinja2 template with ```--template <file>```.
+  - use a recognized file extension for the output file _(.html, .md or .json)_,
  
-  _This will ignore any ```--format``` argument._
+  - set it explicitly with ```--format html|markdown|json```
+
+  - provide a custom Jinja2 template with ```--template <file>```.
+   
+    _This will ignore any ```--format``` argument._
 
 Omitting the output file name or setting it to "-" prints to _stdout_.
-The default output format is Markdown.
+The default output format is _Markdown_.
 
 
 ### Templates
 
 [Jinja2](https://palletsprojects.com/p/jinja/) templates are supported.
-The list of returned objects is passes as _items_. Each item is a fully
+In the template, the list of retrieved items (publications, institutions, ...) 
+is accessible via the ```items``` variable. Each item is a full
 Python object deserialized from API responses.
 
-Simple example for a list of publications: 
+This is a simple example for generating a Markdown list of publication titles 
+and years: 
 
 ```
 # Publications
@@ -130,16 +128,16 @@ Simple example for a list of publications:
 
 ### Predefined Authors List
 
-Creating well-formatted author lists in a template requires multiple lines of 
-code. The API returns authors as a list of person objects. This list has to be 
-iterated, the separator character needs to be placed correctly and whitespace 
-issues occur easily.
+Creating well-formatted author lists in the template is not straighforward, 
+since FreiDok returns authors as a list of individual _person_ objects. 
+This list needs to be iterated, the separator character has to be placed 
+correctly and whitespace issues have to be dealt with.
 
-To facilitate the usage of author lists in templates, each _publication_ 
-object gets an API-independent, additional attribute *_extras_authors* that 
+To facilitate the ouput of author lists in templates, each _publication_ 
+object has the additional string attribute ```_extras_authors``` that 
 contains a pre-formatted authors string.
 
-Three arguments control the style of that list:
+Three arguments control the style of that author list:
 ```
 --authors-abbrev [STR]  Abbreviate authors first names [with optional character]
 --authors-reverse       List authors names as "last name, first name"
@@ -203,3 +201,13 @@ datamodel-codegen \
 --input schema.json \
 --output models.py
 ```
+
+
+## Missing functionality
+
+  - In contrast to _Institutions_, the search for _Person_ and _Project_ is not 
+    implemented yet. To generate a publication list for these entities, you 
+    need to find out the FreiDok ID manually using the FreiDok web page.
+  - Automatic pagination is not implemented yet. The FreiDok API returns at most 
+    100 items per request, so you need to handle pagination manually using the
+    parameters ```--startitem``` and  ```--maxitems```. 
