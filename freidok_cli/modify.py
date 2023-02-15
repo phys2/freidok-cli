@@ -115,20 +115,23 @@ def add_author_list_string(
         pub._extras_authors = sep.join(authors)
 
 
-def has_author(pub: Doc, pattern: str):
-    pattern = pattern.lower()
+def has_author(pub: Doc, names: str | list[str]):
+    if isinstance(names, str):
+        names = [names]
+    names = [p.lower() for p in names]
     for pers in pub.persons:
-        name = get_author_name(pers)
-        if pattern in name.lower():
-            return True
+        name_value = get_author_name(pers)
+        for pattern in names:
+            if pattern in name_value.lower():
+                return True
     return False
 
 
-def exclude_publications_from_author(publist: Publications, name: str):
+def exclude_publications_by_author(publist: Publications, names: str | list[str]):
     # fmt: off
     publist.docs = [
         doc
         for doc in publist.docs
-        if not has_author(doc, name)
+        if not has_author(doc, names)
     ]
     # fmt: on
