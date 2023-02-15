@@ -324,7 +324,15 @@ def arguments(func_institutions, func_publications):
         action='append',
         dest='exclude_authors',
         help="Exclude publications where an author name ('<first> <last>') "
-        "contains NAME.",
+        "contains NAME (case insensitive)",
+    )
+
+    sub_pub_filters.add_argument(
+        "--exclude-title",
+        metavar="TEXT",
+        action='append',
+        dest='exclude_titles',
+        help="Exclude publications having TEXT in its title (case insensitive)",
     )
 
     group = sub_pub_filters.add_mutually_exclusive_group()

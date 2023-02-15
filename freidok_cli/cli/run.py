@@ -135,6 +135,9 @@ def get_publications(args):
     if args.exclude_authors:
         modify.exclude_publications_by_author(publist, names=args.exclude_authors)
 
+    if args.exclude_titles:
+        modify.exclude_publications_by_title(publist, titles=args.exclude_titles)
+
     # add pre-formatted authors list to each publication object (_extras_authors)
     modify.add_author_list_string(
         publist,

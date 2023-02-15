@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from freidok_cli.models.publications import Publications, Person, Doc
 
 
@@ -115,23 +117,78 @@ def add_author_list_string(
         pub._extras_authors = sep.join(authors)
 
 
-def has_author(pub: Doc, names: str | list[str]):
+def publication_has_author(pub: Doc, names: str | list[str]):
+    """
+    Return true if the author name(s) of a publication match any of the
+    given name values, otherwise false.
+
+    The string comparison is case insensitive.
+
+    :param pub: Publication
+    :param names: One or many string values
+    :return: True, if some author name matches, otherwise false
+    """
     if isinstance(names, str):
         names = [names]
     names = [p.lower() for p in names]
     for pers in pub.persons:
         name_value = get_author_name(pers)
-        for pattern in names:
-            if pattern in name_value.lower():
+        for name in names:
+            if name in name_value.lower():
                 return True
     return False
 
 
-def exclude_publications_by_author(publist: Publications, names: str | list[str]):
+def publication_has_title(pub: Doc, titles: str | Sequence[str]):
+    """
+    Return true if the title(s) of a publication match any of the
+    given title values, otherwise false.
+
+    The string comparison is case insensitive.
+
+    :param pub: Publication
+    :param titles: One or many string values
+    :return: True, if some title matches, otherwise false
+    """
+    if isinstance(titles, str):
+        titles = [titles]
+    titles = [t.lower() for t in titles]
+    for title_value in pub.titles:
+        for title in titles:
+            if title in title_value.value.lower():
+                return True
+    return False
+
+
+def exclude_publications_by_author(publist: Publications, names: str | Sequence[str]):
+    """
+    Remove publications having authors matching any of the provided name(s).
+
+    :param publist: Publication list
+    :param names: One or many string values
+    :return: List of publications
+    """
     # fmt: off
     publist.docs = [
-        doc
-        for doc in publist.docs
-        if not has_author(doc, names)
+        pub
+        for pub in publist.docs
+        if not publication_has_author(pub, names)
+    ]
+    # fmt: on
+
+
+def exclude_publications_by_title(publist: Publications, titles: str | list[str]):
+    """
+    Remove publications having titles matching any of the provided name(s).
+
+    :param publist: Publication list
+    :param titles: One or many string values
+    :return: List of publications
+    """
+    # fmt: off
+    publist.docs = [
+        pub
+        for pub in publist.docs
+        if not publication_has_title(pub, titles)
     ]
     # fmt: on
