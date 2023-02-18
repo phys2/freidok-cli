@@ -25,7 +25,8 @@ lxml = "^4.9.2"
 jinja2 = "^3.1.2"
 
 [tool.poetry.scripts]
-freidok = 'freidok_cli.cli.run:main'
+freidok = "freidok_cli.cli.run:main"
+push-to-plone = "freidok_cli.tools.push_to_plone:main"
 
 [tool.poetry.group.dev.dependencies]
 datamodel-code-generator = {extras = ["http"], version = "^0.17.0"}
