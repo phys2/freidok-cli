@@ -1,4 +1,5 @@
 import abc
+import datetime
 from pathlib import Path
 
 import jinja2
@@ -37,7 +38,8 @@ class TemplateExporter(Exporter):
     def _load_default_template(self):
         """Load Jinja2 template from our package"""
         env = jinja2.Environment(
-            loader=jinja2.PackageLoader("freidok_cli", "templates"), **self.environment_args
+            loader=jinja2.PackageLoader("freidok_cli", "templates"),
+            **self.environment_args,
         )
         return env.get_template(self.default_template)
 
@@ -46,6 +48,7 @@ class TemplateExporter(Exporter):
     ):
         context = {
             "items": publications.docs,
+            "datetime": datetime.datetime.now(tz=datetime.timezone.utc).astimezone(),
         }
 
         if template_file:
