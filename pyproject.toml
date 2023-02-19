@@ -52,6 +52,6 @@ push = true
     '^version = "{pep440_version}"$',
     '^current_version = "{version}"$',
 ]
-"freidok/version.py" = [
+"freidok_cli/version.py" = [
     '^__version__ = "{pep440_version}"$',
 ]
