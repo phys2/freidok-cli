@@ -171,6 +171,9 @@ freidok publ [...] --authors-abbrev --authors-sep=" / "
 # API URL
 FREIDOK_URL=https://freidok.uni-freiburg.de/jsonApi/v1/
 
+# template file
+FREIDOK_TEMPLATE=/path/to/custom/template/file
+
 # list of preferred languages
 FREIDOK_LANGUAGES=eng,deu,ger
 
@@ -183,24 +186,10 @@ FREIDOK_FIELDSET_PUBLICATION_SHORT=id,link,publication_year,titles,publisher,per
 
 ### Generate Python classes from JSON schema
 
-Install the package with *dev* dependencies. Then use 
-[datamodel-code-generator](https://github.com/koxudaxi/datamodel-code-generator)
-to create Pydantic models from JSON schema:
+Make sure to install the package with *dev* dependencies, this will install
+[datamodel-code-generator](https://github.com/koxudaxi/datamodel-code-generator).
 
-```bash
-datamodel-codegen \
---use-schema-description \
---use-field-description \
---target-python-version 3.10 \
---use-double-quotes \
---use-standard-collections \
---force-optional \
---encoding utf-8 \
---allow-extra-fields \
---use-annotated \
---input schema.json \
---output models.py
-```
+Then use `codegen/generate-models.py` to generate Pydantic models from JSON schema.
 
 
 ## Missing functionality
