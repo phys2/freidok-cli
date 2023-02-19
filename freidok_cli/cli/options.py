@@ -194,7 +194,8 @@ def arguments(func_institutions, func_publications):
         "--template",
         metavar="FILE",
         type=Path,
-        help="Custom Jinja2 template file path",
+        default=os.getenv("FREIDOK_TEMPLATE"),
+        help="Custom Jinja2 template file path (env: FREIDOK_TEMPLATE)",
     )
 
     argp_api.add_argument(
@@ -218,7 +219,7 @@ def arguments(func_institutions, func_publications):
         "--source",
         default=env_url,
         required=not env_url,
-        help="URL of FreiDok JSON API or path to JSON file",
+        help="URL of FreiDok JSON API or path to JSON file (env: FREIDOK_URL)",
     )
 
     argp_api_settings.add_argument(
@@ -246,7 +247,8 @@ def arguments(func_institutions, func_publications):
         default=env_langs,
         help=(
             "Comma-separated list of preferred languages "
-            f"(3-letter codes, decreasing preference, default={default_langs})"
+            f"(3-letter codes, decreasing preference, default: '{default_langs}', "
+            f"env: FREIDOK_LANGUAGES)"
         ),
     )
 
@@ -321,8 +323,8 @@ def arguments(func_institutions, func_publications):
     sub_pub_filters.add_argument(
         "--exclude-author",
         metavar="NAME",
-        action='append',
-        dest='exclude_authors',
+        action="append",
+        dest="exclude_authors",
         help="Exclude publications where an author name ('<first> <last>') "
         "contains NAME (case insensitive)",
     )
@@ -330,8 +332,8 @@ def arguments(func_institutions, func_publications):
     sub_pub_filters.add_argument(
         "--exclude-title",
         metavar="TEXT",
-        action='append',
-        dest='exclude_titles',
+        action="append",
+        dest="exclude_titles",
         help="Exclude publications having TEXT in its title (case insensitive)",
     )
 
