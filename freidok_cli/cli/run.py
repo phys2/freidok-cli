@@ -4,6 +4,7 @@ import warnings
 from enum import Enum
 
 from dotenv import load_dotenv
+from pydantic import ValidationError
 
 from freidok_cli import modify
 from freidok_cli.cli import options
@@ -40,7 +41,17 @@ def main():
 
     with warnings.catch_warnings(record=True) as caught_warnings:
         warnings.simplefilter("always")
-        args.func(args)
+
+        try:
+            args.func(args)
+        except ValidationError as e:
+            print(
+                "Error: FreiDok API response doesn't match the expected format "
+                f"for '{e.model.__name__}'\n",
+                file=sys.stderr,
+            )
+            raise
+
         for warn in caught_warnings:
             print(f"{warn.category.__name__}: {warn.message}", file=sys.stderr)
 
@@ -199,3 +210,7 @@ def export(items, data, args):
 
         case _:
             raise NotImplementedError(f"Unsupported format: {outfmt}")
+
+
+if __name__ == "__main__":
+    main()
