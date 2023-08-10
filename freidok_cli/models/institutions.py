@@ -3,7 +3,8 @@ Manually generated model classes for freidok API responses of type "institution"
 """
 from typing import Annotated, Optional
 
-from pydantic import BaseModel, Extra, Field
+from freidok_cli.models.base import BaseModel
+from pydantic import Extra, Field
 
 
 class Lifetime(BaseModel):
