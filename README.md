@@ -119,7 +119,7 @@ Python object deserialized from API responses.
 This is a simple example for generating a Markdown list of publication titles 
 and years: 
 
-```
+```jinja
 # Publications
 {% for pub in items %}
 - {{ pub.titles[0].value }} ({{ pub.publication_year.value }})
@@ -181,12 +181,22 @@ FREIDOK_FIELDSET_PUBLICATION_SHORT=id,link,publication_year,titles,publisher,per
 
 ## Development
 
-### Generate Python classes from JSON schema
+### Generate Python model classes from JSON schema
 
-Make sure to install the package with *dev* dependencies, this will install
-[datamodel-code-generator](https://github.com/koxudaxi/datamodel-code-generator).
+Whenever the FreiDok API and its JSON schema changes, it might be desired or 
+even neccesary to update the client's model classes.
 
-Then use `codegen/generate-models.py` to generate Pydantic models from JSON schema.
+1. Make sure to install this package with *dev* dependencies, as this will install
+   [datamodel-code-generator](https://github.com/koxudaxi/datamodel-code-generator).
+
+2. Use `codegen/generate-models.py` to generate Pydantic models from the schema. 
+   Currently, only the *publications* schema is supported.
+
+    - Publications
+    
+      Schema: https://freidok.uni-freiburg.de/site/interfaces?dl=schema_publications
+
+      Command: `codegen/generate-models.py freidok_cli/models/publications.py`
 
 
 ## Missing functionality
