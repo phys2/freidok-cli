@@ -171,9 +171,6 @@ freidok publ [...] --authors-abbrev --authors-sep=" / "
 # API URL
 FREIDOK_URL=https://freidok.uni-freiburg.de/jsonApi/v1/
 
-# template file
-FREIDOK_TEMPLATE=/path/to/custom/template/file
-
 # list of preferred languages
 FREIDOK_LANGUAGES=eng,deu,ger
 
