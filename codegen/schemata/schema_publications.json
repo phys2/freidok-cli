@@ -910,13 +910,38 @@
                 "value": "Version 1"
               }
             ],
-            "required": [
-              "value"
-            ],
+            "required": [],
             "properties": {
               "value": {
                 "type": "string",
                 "description": "the edition/version of the publication"
+              }
+            }
+          },
+          "external_system_ids": {
+            "type": "array",
+            "description": "List of IDs of external systems, from which the entry was imported. E.g. orcid put code",
+            "items": {
+              "type": "object",
+              "description": "Entry for ID of an external system",
+              "examples": [
+                {
+                  "value": "orcid:3233232232",
+                  "position": 1
+                }
+              ],
+              "required": [
+                "value"
+              ],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "description": "the external ID of the publication in the format <prefix>:<ID>"
+                },
+                "position": {
+                  "type": "integer",
+                  "description": "position of this entry. ONLY VISIBLE IF edit=true."
+                }
               }
             }
           },
@@ -933,7 +958,10 @@
             ],
             "properties": {
               "value": {
-                "type": "integer",
+                "type": [
+                  "integer",
+                  "null"
+                ],
                 "description": "the publication-year of the publication."
               }
             }
@@ -1723,7 +1751,7 @@
                   "edition": "Second Edition",
                   "place": "London",
                   "publisher": "BioMed Central",
-                  "year": 2018,
+                  "year": "2018",
                   "page": "71",
                   "series": "Sammelband der Welt",
                   "volume": "2",
@@ -1777,7 +1805,7 @@
                   "description": "An explanation about the purpose of this instance."
                 },
                 "year": {
-                  "type": "integer",
+                  "type": "string",
                   "description": "An explanation about the purpose of this instance."
                 },
                 "link": {
@@ -1831,7 +1859,7 @@
                   "link": "https://katalog.ub.uni-freiburg.de/link?ss=1471-2148",
                   "place": "London",
                   "publisher": "BioMed Central",
-                  "year": 2018,
+                  "year": "2018",
                   "volume": "18",
                   "issue": "1",
                   "page": "71"
@@ -1873,7 +1901,7 @@
                   "description": "An explanation about the purpose of this instance."
                 },
                 "year": {
-                  "type": "integer",
+                  "type": "string",
                   "description": "An explanation about the purpose of this instance."
                 },
                 "link": {
