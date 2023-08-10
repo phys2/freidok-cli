@@ -31,8 +31,8 @@ The ```freidok``` executable will be available after installation.
 
 Two subcommands are available:
 
-  - ```freidok publ``` retrieves publication data
-  - ```freidok inst``` retrieves university institutions
+  - `freidok publ` retrieves publication data
+  - `freidok inst` retrieves university institutions
 
 ### Retrieve institutions
 
@@ -67,7 +67,7 @@ freidok publ --inst-id 2555 --years 2010-2022 --out db.json
 freidok publ --source db.json --years 2019
 ```
 
-Run ```freidok publ --help``` to see a full list of arguments.
+Run `freidok publ --help` to see a full list of arguments.
 Here are the most common:
 
 ```
@@ -93,17 +93,17 @@ filter options:
 
 Output files are created by rendering a Jinja2 template 
 (except for JSON output). For HTML and Markdown, simple built-in templates 
-are used by default. Custom templates can be used with ```--template <file>```. 
+are used by default. Custom templates can be used with `--template <file>`. 
 
 To specify the output format, either 
 
   - use a recognized file extension for the output file _(.html, .md or .json)_,
  
-  - set it explicitly with ```--format html|markdown|json```
+  - set it explicitly with `--format html|markdown|json`
 
-  - provide a custom Jinja2 template with ```--template <file>```.
+  - provide a custom Jinja2 template with `--template <file>`.
    
-    _This will ignore any ```--format``` argument._
+    _This will ignore any `--format` argument._
 
 Omitting the output file name or setting it to "-" prints to _stdout_.
 The default output format is _Markdown_.
@@ -119,7 +119,7 @@ Python object deserialized from API responses.
 This is a simple example for generating a Markdown list of publication titles 
 and years: 
 
-```
+```jinja
 # Publications
 {% for pub in items %}
 - {{ pub.titles[0].value }} ({{ pub.publication_year.value }})
@@ -181,26 +181,22 @@ FREIDOK_FIELDSET_PUBLICATION_SHORT=id,link,publication_year,titles,publisher,per
 
 ## Development
 
-### Generate Python classes from JSON schema
+### Generate Python model classes from JSON schema
 
-Install the package with *dev* dependencies. Then use 
-[datamodel-code-generator](https://github.com/koxudaxi/datamodel-code-generator)
-to create Pydantic models from JSON schema:
+Whenever the FreiDok API and its JSON schema changes, it might be desired or 
+even neccesary to update the client's model classes.
 
-```bash
-datamodel-codegen \
---use-schema-description \
---use-field-description \
---target-python-version 3.10 \
---use-double-quotes \
---use-standard-collections \
---force-optional \
---encoding utf-8 \
---allow-extra-fields \
---use-annotated \
---input schema.json \
---output models.py
-```
+1. Make sure to install this package with *dev* dependencies, as this will install
+   [datamodel-code-generator](https://github.com/koxudaxi/datamodel-code-generator).
+
+2. Use `codegen/generate-models.py` to generate Pydantic models from the schema. 
+   Currently, only the *publications* schema is supported.
+
+    - Publications
+    
+      Schema: https://freidok.uni-freiburg.de/site/interfaces?dl=schema_publications
+
+      Command: `codegen/generate-models.py freidok_cli/models/publications.py`
 
 
 ## Missing functionality
@@ -210,4 +206,4 @@ datamodel-codegen \
     need to find out the FreiDok ID manually using the FreiDok web page.
   - Automatic pagination is not implemented yet. The FreiDok API returns at most 
     100 items per request, so you need to handle pagination manually using the
-    parameters ```--startitem``` and  ```--maxitems```. 
+    parameters `--startitem` and  `--maxitems`. 

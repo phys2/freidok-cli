@@ -4,13 +4,16 @@ from pathlib import Path
 
 import jinja2
 
+from freidok_cli.models.institutions import Institutions
 from freidok_cli.models.publications import Publications
 from freidok_cli.utils import opens
+
+TFreidok = Publications | Institutions
 
 
 class Exporter(metaclass=abc.ABCMeta):
     """
-    Publications exporter base class.
+    Base class for FreiDok object exporters.
     """
 
     pass
@@ -18,7 +21,7 @@ class Exporter(metaclass=abc.ABCMeta):
 
 class TemplateExporter(Exporter):
     """
-    Export publications via Jinja2 templates.
+    Export FreiDok objects via Jinja2 templates.
     """
 
     def __init__(self, default_template=None, jinja_args=None, **kwargs):
@@ -44,10 +47,13 @@ class TemplateExporter(Exporter):
         return env.get_template(self.default_template)
 
     def export(
-        self, publications: Publications, outfile: str | Path, template_file=None
+        self,
+        model: TFreidok,
+        outfile: str | Path,
+        template_file=None,
     ):
         context = {
-            "items": publications.docs,
+            "items": model.docs,
             "datetime": datetime.datetime.now(tz=datetime.timezone.utc).astimezone(),
         }
 
@@ -63,17 +69,19 @@ class TemplateExporter(Exporter):
 
 
 PublicationsHtmlExporter = TemplateExporter(
-    default_template="publications/simple-list.html", jinja_args=dict(autoescape=True)
+    default_template="publications/simple-list.html",
+    jinja_args=dict(autoescape=True),
 )
 
 PublicationsMarkdownExporter = TemplateExporter(
-    default_template="publications/simple-list.md"
+    default_template="publications/simple-list.md",
 )
 
 InstitutionsHtmlExporter = TemplateExporter(
-    default_template="institutions/simple-list.html", jinja_args=dict(autoescape=True)
+    default_template="institutions/simple-list.html",
+    jinja_args=dict(autoescape=True),
 )
 
 InstitutionsMarkdownExporter = TemplateExporter(
-    default_template="institutions/simple-list.md"
+    default_template="institutions/simple-list.md",
 )

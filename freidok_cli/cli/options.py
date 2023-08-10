@@ -194,8 +194,7 @@ def arguments(func_institutions, func_publications):
         "--template",
         metavar="FILE",
         type=Path,
-        default=os.getenv("FREIDOK_TEMPLATE"),
-        help="Custom Jinja2 template file path (env: FREIDOK_TEMPLATE)",
+        help="Custom Jinja2 template file path",
     )
 
     argp_api.add_argument(

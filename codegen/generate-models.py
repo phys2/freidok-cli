@@ -36,6 +36,9 @@ def arguments():
 def main():
     args = arguments()
 
+    # base class for all generated models
+    base_class = "freidok_cli.models.base.BaseModel"
+
     source = args.schema or FREIDOK_SCHEMA_PUB
 
     if source.startswith(("http:", "https:")):
@@ -54,6 +57,7 @@ def main():
         --allow-extra-fields
         --use-annotated
         --force-optional
+        --base-class {base_class}
         --output {args.outfile}
         {source}
     """
