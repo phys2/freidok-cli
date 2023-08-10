@@ -57,6 +57,8 @@ def main():
         --allow-extra-fields
         --use-annotated
         --force-optional
+        --input-file-type jsonschema
+        --output-model-type pydantic.BaseModel
         --base-class {base_class}
         --output {args.outfile}
         {source}
