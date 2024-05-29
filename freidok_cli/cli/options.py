@@ -165,6 +165,9 @@ def arguments(func_institutions, func_publications):
             " or any other text format via Jinja2 templates."
         ),
     )
+
+    argp_main.set_defaults(func=lambda x: argp_main.print_usage())
+
     group = argp_main.add_argument_group("options")
     group.add_argument(
         "-h",
