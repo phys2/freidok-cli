@@ -1,40 +1,45 @@
-[tool.poetry]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
 name = "freidok-cli"
 version = "1.2.1"
 description = "A command-line client for FreiDok, the publication platform of the University of Freiburg"
-authors = ["Alexander Haupt <alexander.haupt@physiologie.uni-freiburg.de>"]
+authors = [
+    { name = "Alexander Haupt", email = "alexander.haupt@physiologie.uni-freiburg.de" }
+]
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/phys2/freidok-cli"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Operating System :: OS Independent",
 ]
+requires-python = ">=3.10,<4"
+dependencies = [
+    "requests>=2.34.2",
+    "pydantic>=1.10.12,<2",
+    "python-dotenv>=1.2.2",
+    "lxml>=6.1.0",
+    "jinja2>=3.1.6",
+]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[dependency-groups]
+dev = [
+    "datamodel-code-generator[http]>=0.21.0,<0.22.0",
+    "bumpver",
+    "ruff",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-requests = "^2.34.2"
-pydantic = ">=1.10.12,<2"
-python-dotenv = "^1.2.2"
-lxml = "^6.1.0"
-jinja2 = "^3.1.6"
-
-[tool.poetry.scripts]
+[project.scripts]
 freidok = "freidok_cli.cli.run:main"
 
-[tool.poetry.group.dev.dependencies]
-datamodel-code-generator = {extras = ["http"], version = "^0.21.0"}
-bumpver = "^2025.1131"
-ruff = "^0.15.13"
+[project.urls]
+repository = "https://github.com/phys2/freidok-cli"
 
 [tool.ruff]
 line-length = 88
-target-version = "py310"
 include = ["*.py", "**/pyproject.toml"]
 extend-exclude = ["models"]
 
