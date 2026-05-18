@@ -66,7 +66,7 @@ def get_output_format(args):
 
     if args.out:
         match args.out.suffix.lower():
-            case (".htm" | ".html"):
+            case ".htm" | ".html":
                 return ExportFormat.HTML
             case ".json":
                 return ExportFormat.JSON

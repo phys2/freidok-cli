@@ -2,6 +2,7 @@
 """
 Generate Python code (Pydantic model classes) from JSON Schema.
 """
+
 import argparse
 import shlex
 import subprocess

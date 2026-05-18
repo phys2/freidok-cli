@@ -29,14 +29,14 @@ freidok = "freidok_cli.cli.run:main"
 
 [tool.poetry.group.dev.dependencies]
 datamodel-code-generator = {extras = ["http"], version = "^0.21.0"}
-black = "^26.5.0"
 bumpver = "^2025.1131"
+ruff = "^0.15.13"
 
-[tool.black]
+[tool.ruff]
 line-length = 88
-target-version = ['py310']
-include = '\.py$'
-extend-exclude = '/models/'
+target-version = "py310"
+include = ["*.py", "**/pyproject.toml"]
+extend-exclude = ["models"]
 
 [tool.bumpver]
 current_version = "1.2.1"
