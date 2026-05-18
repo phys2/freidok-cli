@@ -16,9 +16,7 @@ CMD_NOT_FOUND_MSG = """
 Error: {cmd} cannot be found.
 
 Install with
-     poetry install --with dev
-or
-     pip install datamodel-code-generator[http]
+  pip install datamodel-code-generator[http]
 """
 
 
