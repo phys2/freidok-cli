@@ -18,17 +18,16 @@ classifiers = [
 ]
 requires-python = ">=3.10,<4"
 dependencies = [
-    "requests>=2.34.2",
+    "requests>=2.34.2,<3",
     "pydantic>=1.10.12,<2",
-    "python-dotenv>=1.2.2",
-    "lxml>=6.1.0",
-    "jinja2>=3.1.6",
+    "python-dotenv>=1.2.2,<2",
+    "lxml>=6.1.0,<7",
+    "jinja2>=3.1.6,<3.2.0",
 ]
 
 [dependency-groups]
 dev = [
     "datamodel-code-generator[http]>=0.21.0,<0.22.0",
-    "bumpver",
     "ruff",
 ]
 
@@ -42,20 +41,3 @@ repository = "https://github.com/phys2/freidok-cli"
 line-length = 88
 include = ["*.py", "**/pyproject.toml"]
 extend-exclude = ["models"]
-
-[tool.bumpver]
-current_version = "1.2.1"
-version_pattern = "MAJOR.MINOR.PATCH[PYTAGNUM]"
-commit_message = "Bump version to {new_version}"
-commit = true
-tag = true
-push = true
-
-[tool.bumpver.file_patterns]
-"pyproject.toml" = [
-    '^version = "{pep440_version}"$',
-    '^current_version = "{version}"$',
-]
-"freidok_cli/version.py" = [
-    '^__version__ = "{pep440_version}"$',
-]
